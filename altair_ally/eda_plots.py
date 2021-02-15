@@ -177,3 +177,40 @@ def dist(data, color_col=None, mark='area', columns=None, rug=True):
         chart = alt.concat(*subplot_row, columns=columns)#.configure_view(strokeWidth=0)
 
     return chart
+
+
+def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mouseover'):
+    '''
+    Correlation of numerical columns.
+    '''
+    hover = alt.selection_multi(fields=['variable', 'index'], on=select_on, nearest=True, empty='all')
+
+    subplot_row = []
+    for num, corr_type in enumerate(corr_types):
+        if num > 0:
+            yaxis = alt.Axis(labels=False)
+        else:
+            yaxis = alt.Axis()
+        corr_df = data.select_dtypes('number').corr(corr_type)
+        mask = np.zeros_like(corr_df, dtype=bool)
+        mask[np.triu_indices_from(mask)] = True
+        corr_df[mask] = np.nan
+
+        corr2 = corr_df.reset_index().melt(id_vars='index').dropna().sort_values('variable', ascending=False)
+        var_sort = corr2['variable'].value_counts().index.tolist()
+        ind_sort = corr2['index'].value_counts().index.tolist()
+
+        subplot_row.append(
+            alt.Chart(corr2, mark=mark, title=f'{corr_type.capitalize()} correlations')
+            .transform_calculate(
+            abs_value='abs(datum.value)')
+         .encode(
+            alt.X('index', sort=ind_sort, title=''),
+            alt.Y('variable', sort=var_sort[::-1], title='', axis=yaxis),
+#     alt.Color('value', title=[corr_type.capitalize(), 'coefficient'], scale=alt.Scale(domain=[-1, 1], scheme='blueorange')),
+            alt.Color('value', title='', scale=alt.Scale(domain=[-1, 1], scheme='blueorange')),
+            alt.Size('abs_value:Q', scale=alt.Scale(domain=[0, 1]), legend=None),
+            alt.Tooltip('value', format='.2f'),
+            opacity = alt.condition(hover, alt.value(0.9), alt.value(0.2))).add_selection(hover))#.properties(width=300, height=300)
+            
+    return alt.concat(*subplot_row).resolve_axis(y='shared').configure_view(strokeWidth=0)
