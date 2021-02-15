@@ -214,3 +214,36 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
             opacity = alt.condition(hover, alt.value(0.9), alt.value(0.2))).add_selection(hover))#.properties(width=300, height=300)
             
     return alt.concat(*subplot_row).resolve_axis(y='shared').configure_view(strokeWidth=0)
+
+
+def parcoord(data, color_col=None, rescale=None):
+    # Setting a non-existing column with specified type passes through without effect
+    # and eliminates the need to hvae a separate plotting section for colored bars below.
+    if color_col is None:
+        color_col = ':Q'
+    # rescale = None # give example of lamba fun and reccoment skleanr
+    num_cols = data.select_dtypes('number').columns.to_list()
+
+    if rescale == 'mean-sd':
+        data[num_cols] = data[num_cols].apply(lambda x: (x - x.mean()) / x.std()) 
+    elif rescale == 'min-max':
+        data[num_cols] = data[num_cols].apply(lambda x: (x - x.min()) / (x.max() - x.min()))
+    elif callable(rescale):
+        data[num_cols] = data[num_cols].apply(rescale)
+    elif rescale is not None:
+        print('not supported')
+
+    legend_click = alt.selection_multi(fields=[color_col], bind='legend')
+
+    return alt.Chart(data[num_cols + [color_col]]).transform_window(
+        index='count()'
+    ).transform_fold(
+        num_cols
+    ).mark_line().encode(
+        alt.X('key:O', title=None, scale=alt.Scale(nice=False, padding=0.05)),
+        alt.Y('value:Q', title=None),
+        alt.Color(color_col, title=None),
+        detail='index:N',
+        opacity=alt.condition(legend_click, alt.value(0.6), alt.value(0.05))
+    ).properties(width=len(num_cols) * 100).add_selection(legend_click)
+    
