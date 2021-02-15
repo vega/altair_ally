@@ -12,6 +12,7 @@ def nan(data):
     Only shows columns with NaNs
     '''
     cols_with_nans = data.columns[data.isna().any()]
+    heatmap_width = data.shape[0]
     # Long form data
     data = (
         data[cols_with_nans]
@@ -50,7 +51,7 @@ def nan(data):
         alt.X('index:O', axis=None),
         alt.Y('variable', title=None, sort=sorted_nan_cols),
         alt.Color('value', scale=color_scale, sort=[False, True], legend=alt.Legend(orient='top', offset=-13), title=None),
-        alt.Stroke('value', scale=color_scale, sort=[False, True], legend=None)).properties(width=data.shape[0] / 8).add_selection(zoom)
+        alt.Stroke('value', scale=color_scale, sort=[False, True], legend=None)).properties(width=heatmap_width).add_selection(zoom)
 
     # Bind bar chart update to zoom in individual chart and add hover to individual chart,
     # configurable column for tooltip, or index
@@ -133,7 +134,7 @@ def dist(data, color_col=None, mark='area', columns=None, rug=True):
     # bins = alt.Bin(maxbins=30)
     if columns == None:
         # Ceil sqrt
-        columns = int(-(-data.columns.size ** (1/2) // 1))
+        columns = int(-(-data.select_dtypes('number').columns.size ** (1/2) // 1))
 
     if not mark in ['area', 'line', 'bar']:
         print('not supported')
