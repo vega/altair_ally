@@ -57,3 +57,68 @@ def nan(data):
     return (nan_heatmap | nan_bars_with_text).configure_view(strokeWidth=0).resolve_scale(y='shared')
 
 
+def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150):
+    # support categorical?
+    col_dtype='number'
+    # enh: zooming wihout panning
+    # color_col = 'species:N'  # must be passed with a type, enh: autoetect 
+    # tooltip = alt.Tooltip('species')
+    cols = data.select_dtypes(col_dtype).columns
+
+    # Setting a non-existing column with specified type passes through without effect
+    # and eliminates the need to hvae a separate plotting section for colored bars below.
+    if color_col is None:
+        color_col = ':Q'
+    if tooltip is None:
+        tooltip = ':Q'
+
+    # Infer color data type if not specified 
+    if color_col[-2:] in [':Q', ':T', ':N', ':O']:
+        color_alt = alt.Color(color_col, title=None, legend=alt.Legend(orient='left', offset=width * -1.6))
+        # The selection fields parmeter does not work with the suffix
+        legend_color = color_col.split(':')[0]
+    else:
+        color_alt = alt.Color(color_col, title=None, type=alt.utils.infer_vegalite_type(data[color_col]))
+        legend_color = color_col
+
+    # Set up interactions
+    brush = alt.selection_interval()
+    color = alt.condition(brush, color_alt, alt.value('lightgrey'))
+    legend_click = alt.selection_multi(fields=[legend_color], bind='legend')
+    opacity = alt.condition(legend_click, alt.value(0.8), alt.value(0.2))
+    hidden_axis = alt.Axis(domain=False, title='', labels=False, ticks=False)
+
+    # Create corner of pair-wise scatters
+    i = 0
+    # enh: Have options for different corner alignment of the charts.
+    # histograms would look better on top of top corner than under botom corner
+    col_combos = list(combinations(cols, 2))[::-1]
+    subplot_row = []
+    while i < len(cols) - 1:
+        plot_column = []
+        for num, (y, x) in enumerate(col_combos[:i+1]):
+            if num == 0 and i == len(cols) - 2:
+                subplot = alt.Chart(data, mark=mark).encode(x=x, y=y)
+            elif num == 0:
+                subplot = (
+                    alt.Chart(data, mark=mark).encode(
+                        alt.X(x, axis=hidden_axis), alt.Y(y)))
+            elif i == len(cols) - 2:
+                subplot = (
+                    alt.Chart(data, mark=mark).encode(
+                        alt.X(x), alt.Y(y, axis=hidden_axis)))
+            else:
+                subplot = (
+                    alt.Chart(data, mark=mark).encode(
+                        alt.X(x, axis=hidden_axis), alt.Y(y, axis=hidden_axis)))
+            plot_column.append(
+                subplot
+                .encode(opacity=opacity, color=color, tooltip=tooltip)
+                .properties(width=width, height=height))
+        subplot_row.append(alt.hconcat(*plot_column))
+        i += 1
+        col_combos = col_combos[i:]
+
+    return (
+        alt.vconcat(*subplot_row)
+        .add_selection(brush, legend_click))
