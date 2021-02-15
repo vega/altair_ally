@@ -246,4 +246,3 @@ def parcoord(data, color_col=None, rescale=None):
         detail='index:N',
         opacity=alt.condition(legend_click, alt.value(0.6), alt.value(0.05))
     ).properties(width=len(num_cols) * 100).add_selection(legend_click)
-    
