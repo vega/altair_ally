@@ -122,3 +122,58 @@ def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150
     return (
         alt.vconcat(*subplot_row)
         .add_selection(brush, legend_click))
+
+
+def dist(data, color_col=None, mark='area', columns=None, rug=True):
+    '''
+    Densities can include a rug to indicate approximately how many obs there are
+    since dns with samll obs not good
+    '''
+    bins = True
+    # bins = alt.Bin(maxbins=30)
+    if columns == None:
+        # Ceil sqrt
+        columns = int(-(-data.columns.size ** (1/2) // 1))
+
+    if not mark in ['area', 'line', 'bar']:
+        print('not supported')
+    # if mark == 'area':
+        # mark = alt.MarkDef(mark, opacity=0.7)
+
+    # Setting a non-existing column with specified type passes through without effect
+    # and eliminates the need to hvae a separate plotting section for colored bars below.
+    if color_col is None:
+        color_col = ':Q'
+
+    # Histograms
+    if mark == 'bar':
+        chart = (alt.Chart(data).mark_bar().encode(
+            alt.X(alt.repeat(), type='quantitative', bin=bins),
+            alt.Y('count()', title='', stack=None),
+            alt.Color(color_col))
+         .properties(width=185, height=120)
+         .repeat(data.select_dtypes('number').columns.tolist()[::-1], columns=columns))
+
+    # Density plots
+    elif mark in ['area', 'line']: 
+        subplot_row = []
+        for col in data.select_dtypes('number').columns.tolist()[::-1]:
+            subplot = (
+                alt.Chart(data, mark=mark).transform_density(
+                col, [col, 'density'], groupby=[color_col], minsteps=100)
+                .encode(
+                alt.X(col, axis=alt.Axis(grid=False)),
+                alt.Y('density:Q', title=None),
+                alt.Color(color_col))
+    #              alt.Y('density:Q', title=None, axis=alt.Axis(labels=False, ticks=False, grid=False)))
+    #              alt.Y('density:Q', title=None, axis=None)) #alt.Axis(labels=False, ticks=False, )))
+            .properties(width=185, height=120))
+            if rug:
+                rugplot = alt.Chart(data).mark_tick(color='black', opacity=0.3, yOffset=60 - 3, height=7).encode(
+                    alt.X(col))
+                subplot = subplot + rugplot
+
+            subplot_row.append(subplot)
+        chart = alt.concat(*subplot_row, columns=columns)#.configure_view(strokeWidth=0)
+
+    return chart
