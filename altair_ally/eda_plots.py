@@ -203,6 +203,7 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
     '''
     Correlation of numerical columns.
     '''
+    # TODO support NA, maybe via aly.corr(movies.isna())
     hover = alt.selection_multi(fields=['variable', 'index'], on=select_on, nearest=True, empty='all')
 
     subplot_row = []
@@ -266,3 +267,51 @@ def parcoord(data, color_col=None, rescale=None):
         detail='index:N',
         opacity=alt.condition(legend_click, alt.value(0.6), alt.value(0.05))
     ).properties(width=len(num_cols) * 100).add_selection(legend_click)
+
+
+def heatmap(data, color_col=None, sort=None, rescale='min-max'):
+    """
+    Create a (normalized and sorted) heatmap of all columns
+    """
+    num_cols = data.select_dtypes('number').columns.to_list()
+    heatmap_width = data.shape[0]
+    # TODO rename color_col to color or color_by everywhere
+    # TODO move this to a utils module since it is used in two places now
+    if rescale == 'mean-sd':
+        data[num_cols] = data[num_cols].apply(lambda x: (x - x.mean()) / x.std()) 
+    elif rescale == 'min-max':
+        data[num_cols] = data[num_cols].apply(lambda x: (x - x.min()) / (x.max() - x.min()))
+    elif callable(rescale):
+        data[num_cols] = data[num_cols].apply(rescale)
+    elif rescale is not None:
+        print('not supported')
+        
+    # data = data.sort_values('MPAA Rating')
+    if sort is not None:  # autosort on color? then there is no way to not sort unless chnge paarm to 'auto'
+        data = data.sort_values(sort)
+
+    num_heatmap = alt.Chart(data[num_cols]).transform_window(
+            index='count()'
+        ).transform_fold(
+            num_cols
+        ).mark_rect(height=16).encode(
+            alt.Y('key:N', title=None),
+            alt.X('index:O', title=None, axis=None),
+            alt.Color('value:Q', title=None, legend=alt.Legend(orient='right', type='gradient')),
+            alt.Stroke('value:Q')
+    ).properties(width=heatmap_width)
+
+    if color_col is None:
+        return num_heatmap
+    else:
+        cat_heatmap = alt.Chart(data[[color_col]]).transform_window(
+            index='count()'
+        ).transform_fold(
+            [color_col]
+        ).mark_rect(height=16).encode(
+            alt.Y('key:N', title=None),
+            alt.X('index:O', title=None, axis=None),
+            alt.Color('value:N', title=None, legend=alt.Legend(orient='bottom')),
+            alt.Stroke('value:N')
+        ).properties(width=heatmap_width)
+        return num_heatmap & cat_heatmap
