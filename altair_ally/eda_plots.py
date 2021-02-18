@@ -287,7 +287,7 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max'):
         print('not supported')
         
     # data = data.sort_values('MPAA Rating')
-    if sort is not None:  # autosort on color? then there is no way to not sort unless chnge paarm to 'auto'
+    if sort is not None:  # TODO autosort on color? then there is no way to not sort unless chnge paarm to 'auto'
         data = data.sort_values(sort)
 
     num_heatmap = alt.Chart(data[num_cols]).transform_window(
