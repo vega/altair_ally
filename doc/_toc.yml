@@ -3,6 +3,7 @@
 #
 - file: intro
 - file: examples
+- file: api
 # - file: content
   # sections:
     # - file: markdown
