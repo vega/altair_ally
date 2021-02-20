@@ -8,9 +8,22 @@ import numpy as np
 # enf: include some themes? or straight toaltari?
 # enh: add chart width config for each
 def nan(data):
-    '''
-    Only shows columns with NaNs
-    '''
+    """
+    Plot indiviudal missing values and overall counts for each column.
+
+    There is a default interaction defined where selections in the heatmap
+    will update the counts in the barplot.
+
+    Parameters
+    ----------
+    data: DataFrame
+        Pandas input dataframe.
+
+    Returns
+    -------
+    ConcatChart
+        Concatenated Altair chart with individual NaNs and overall counts.
+    """
     cols_with_nans = data.columns[data.isna().any()]
     heatmap_width = data.shape[0]
     # Long form data
@@ -59,6 +72,34 @@ def nan(data):
 
 
 def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150):
+    """
+    Create pairwise scatter plots of all column combinations.
+
+    In contrast to many other pairplot tools,
+    this function creates a single scatter plot per column pair,
+    and no distribution plots along the diagonal.
+
+    Parameters
+    ----------
+    data : DataFrame
+        pandas DataFrame with input data.
+    color_col : str
+        Column in **data** used for the color encoding.
+    tooltip: str
+        Column in **data** used for the tooltip encoding.
+    mark: str
+        Shape of the points. Passed to Chart.
+        One of "circle", "square", "tick", or "point".
+    width: int or float
+        Chart width.
+    height: int or float
+        Chart height.
+
+    Returns
+    -------
+    ConcatChart
+        Concatenated Chart of pairwise column scatter plots.
+    """
     # support categorical?
     col_dtype='number'
     # enh: zooming wihout panning
@@ -126,10 +167,43 @@ def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150
 
 
 def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True):
-    '''
-    Densities can include a rug to indicate approximately how many obs there are
-    since dns with samll obs not good
-    '''
+    """
+    Plot the distribution of each dataframe column.
+
+    Can visualize univariate distributions
+    of either numerical or categorical variables
+    depending on which **dtype** is used.
+    Numercial distributions can be plotted as either density plots or histograms,
+    depending on which **mark** is used.
+    Since density plots can be misleadingly smooth with small datasets,
+    a rug plot is included by default to indicate the number of observations in the data.
+
+    Parameters
+    ----------
+    data : DataFrame
+        pandas DataFrame with input data.
+    color_col : str
+        Column in **data** used for the color encoding.
+    mark : str
+        Wether to plot a density plot ('area'),
+        or a histogram / barplot of counts ('bar').
+        The default is to use an area for numerical variables,
+        and a barplot for categorical variables.
+    dtype : str or type
+        Which column types to plot, passed to DataFrame.select_dtypes.
+        If 'object', 'category', or 'bool',
+        a barplot of counts for each categorical value will be plotted.
+    columns : int
+        The number of columns in the plot grid.
+        The default is to create an as square grid as possible.
+    rug : bool
+        Wether to include a rug plot or not.
+
+    Returns
+    -------
+    ConcatChart
+        Concatenated Chart of the distribution plots laid out in a square grid.
+    """
     # TODO column_wrap instead of columns?
     # TODO add clickable legend
 
@@ -199,10 +273,31 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
                 subplot_row.append(subplot)
             return alt.concat(*subplot_row, columns=columns)#.configure_view(strokeWidth=0)
 
+
 def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mouseover'):
-    '''
-    Correlation of numerical columns.
-    '''
+    """
+    Plot the pairwise correlations between columns.
+
+    Parameters
+    ----------
+    data : DataFrame
+        pandas DataFrame with input data.
+    corr_types: list of (str or function)
+        Which correlations to calculate.
+        Anything that is accepted by DataFrame.corr.
+    mark: str
+        Shape of the points. Passed to Chart.
+        One of "circle", "square", "tick", or "point".
+    select_on : str
+        When to highlight points across plots.
+        A string representing a vega event stream,
+        e.g. 'click' or 'mouseover'.
+
+    Returns
+    -------
+    ConcatChart
+        Concatenated Chart of the correlation plots laid out in a single row.
+    """
     # TODO support NA, maybe via aly.corr(movies.isna())
     hover = alt.selection_multi(fields=['variable', 'index'], on=select_on, nearest=True, empty='all')
 
@@ -237,7 +332,28 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
     return alt.concat(*subplot_row).resolve_axis(y='shared').configure_view(strokeWidth=0)
 
 
-def parcoord(data, color_col=None, rescale=None):
+def parcoord(data, color_col=None, rescale='min-max'):
+    """
+    Plot the values of all columns and observations as a parallel coordinates plot.
+
+    Parameters
+    ----------
+    data : DataFrame
+        pandas DataFrame with input data.
+    color_col: str
+        Which column in **data** to use for the color encoding.
+    rescale : str or fun
+        How to rescale the values before plotting them.
+        Ensures that one column does not dominate the plot.
+        One of 'min-max', 'mean-sd', or a custom function.
+        'min-max` rescales the data to lie in the range 0-1.
+        'mean-sd' rescales the data to have mean 0 and sd 1.
+
+    Returns
+    -------
+    Chart
+        Chart with one x-value per column and one line per row in **data**.
+    """
     # Setting a non-existing column with specified type passes through without effect
     # and eliminates the need to hvae a separate plotting section for colored bars below.
     if color_col is None:
@@ -271,7 +387,31 @@ def parcoord(data, color_col=None, rescale=None):
 
 def heatmap(data, color_col=None, sort=None, rescale='min-max'):
     """
-    Create a (normalized and sorted) heatmap of all columns
+    Plot the values of all columns and observations as a heatmap.
+
+    Parameters
+    ----------
+    data : DataFrame
+        pandas DataFrame with input data.
+    color_col: str
+        Which column in **data** to use for the color encoding.
+        Helpful to investigate if a categorical column is correlated
+        with the value arrangement in the numerical columns.
+    sort: str
+        Which column in **data** to use for sorting the observations.
+        This can be helpful to see patterns in which columns look similar when sorted.
+    rescale : str or fun
+        How to rescale the values before plotting them.
+        Ensures that one column does not dominate the plot.
+        One of 'min-max', 'mean-sd', or a custom function.
+        'min-max` rescales the data to lie in the range 0-1.
+        'mean-sd' rescales the data to have mean 0 and sd 1.
+
+    Returns
+    -------
+    Chart or ConcatChart
+        Single Chart with observed values if no color encoding is used,
+        else concatenated Chart including categorical colors.
     """
     num_cols = data.select_dtypes('number').columns.to_list()
     heatmap_width = data.shape[0]
