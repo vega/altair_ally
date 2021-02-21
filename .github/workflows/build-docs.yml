@@ -33,7 +33,7 @@ jobs:
       - name: Install packages
         run: |
           python -m pip install --upgrade pip
-          python -m pip install setuptools jupyter-book ghp-import pandas altair vega_datasets==0.8.0
+          python -m pip install . setuptools jupyter-book ghp-import pandas altair vega_datasets==0.8.0
 
       - name: Build documentation and push to gh-pages
         run: |
