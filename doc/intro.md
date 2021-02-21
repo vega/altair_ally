@@ -1,7 +1,7 @@
-# Altair ally
+# Altair Ally
 
-Altair ally is an companion package to Altair,
-which provides a less verbose syntax to create a few common plots
+Altair Ally is an companion package to Altair,
+which provides a less verbose syntax to create common plots
 for exploratory data analysis (EDA).
 The goal is to encourage good EDA habits
 by making a few common plots easier to make
