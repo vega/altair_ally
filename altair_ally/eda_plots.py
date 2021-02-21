@@ -1,4 +1,4 @@
-from itertools import combinations
+from itertools import combinations, cycle
 
 import altair as alt
 import numpy as np
@@ -173,7 +173,9 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
             return alt.concat(*subplot_row, columns=columns)#.configure_view(strokeWidth=0)
 
 
-def heatmap(data, color_col=None, sort=None, rescale='min-max'):
+def heatmap(data, color_col=None, sort=None, rescale='min-max',
+            cat_schemes=['tableau10', 'set2', 'accent'],
+            num_scheme='yellowgreenblue'):
     """
     Plot the values of all columns and observations as a heatmap.
 
@@ -185,8 +187,8 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max'):
         Which column in **data** to use for the color encoding.
         Helpful to investigate if a categorical column is correlated
         with the value arrangement in the numerical columns.
-    sort: str
-        Which column in **data** to use for sorting the observations.
+    sort: str or list of str
+        Which column(s) in **data** to use for sorting the observations.
         This can be helpful to see patterns in which columns look similar when sorted.
     rescale : str or fun
         How to rescale the values before plotting them.
@@ -194,6 +196,13 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max'):
         One of 'min-max', 'mean-sd', or a custom function.
         'min-max` rescales the data to lie in the range 0-1.
         'mean-sd' rescales the data to have mean 0 and sd 1.
+    cat_schemes : list of str
+        Color schemes to use for each of the categorical heatmaps.
+        Cycles through when shorter than **color_col**,
+        so set to a list with a single item
+        if you want to use the same color scheme for all categorical heatmaps.
+    num_scheme : str
+        Color scheme to use for the numerical heatmap.
 
     Returns
     -------
@@ -214,10 +223,10 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max'):
     elif rescale is not None:
         print('not supported')
         
-    # data = data.sort_values('MPAA Rating')
     if sort is not None:  # TODO autosort on color? then there is no way to not sort unless chnge paarm to 'auto'
         data = data.sort_values(sort)
 
+    scale = alt.Scale(scheme=num_scheme)
     num_heatmap = alt.Chart(data[num_cols]).transform_window(
             index='count()'
         ).transform_fold(
@@ -225,24 +234,33 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max'):
         ).mark_rect(height=16).encode(
             alt.Y('key:N', title=None),
             alt.X('index:O', title=None, axis=None),
-            alt.Color('value:Q', title=None, legend=alt.Legend(orient='right', type='gradient')),
-            alt.Stroke('value:Q')
+            alt.Color('value:Q', scale=scale, title=None, legend=alt.Legend(orient='right', type='gradient')),
+            alt.Stroke('value:Q', scale=scale),
+            alt.Tooltip('value:Q')
     ).properties(width=heatmap_width)
 
     if color_col is None:
         return num_heatmap
     else:
-        cat_heatmap = alt.Chart(data[[color_col]]).transform_window(
-            index='count()'
-        ).transform_fold(
-            [color_col]
-        ).mark_rect(height=16).encode(
-            alt.Y('key:N', title=None),
-            alt.X('index:O', title=None, axis=None),
-            alt.Color('value:N', title=None, legend=alt.Legend(orient='bottom')),
-            alt.Stroke('value:N')
-        ).properties(width=heatmap_width)
-        return num_heatmap & cat_heatmap
+        color_cols = color_col
+        if isinstance(color_col, str):
+            color_cols = [color_col]
+        cat_heatmaps = []
+        for color_col, scheme in zip(color_cols, cycle(cat_schemes)):
+            print(scheme)
+            color_col = [color_col]
+            cat_heatmaps.append(alt.Chart(data[color_col]).transform_window(
+                index='count()'
+            ).transform_fold(
+                color_col
+            ).mark_rect(height=16).encode(
+                alt.Y('key:N', title=None),
+                alt.X('index:O', title=None, axis=None),
+                alt.Color('value:N', title=None, scale=alt.Scale(scheme=scheme), legend=alt.Legend(orient='bottom', offset=5)),
+                alt.Stroke('value:N', scale=alt.Scale(scheme=scheme)),
+                alt.Tooltip('value:N')
+            ).properties(width=heatmap_width))
+        return alt.vconcat(num_heatmap, *cat_heatmaps)
 
 
 def nan(data):
