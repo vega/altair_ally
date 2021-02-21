@@ -1,0 +1,453 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Reference &#8212; Altair Ally</title>
+    
+  <link rel="stylesheet" href="_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.40e2e510f6b7d1648584402491bb10fe.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d31b09fe5c1d09cb49b26a786de4a05d.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Examples" href="examples.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">Altair Ally</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro.html">
+   Altair Ally
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   Examples
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   API Reference
+  </a>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/api.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/joelostblom/altair_ally"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/joelostblom/altair_ally/issues/new?title=Issue%20on%20page%20%2Fapi.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#corr">
+   corr
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dist">
+   dist
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#heatmap">
+   heatmap
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#nan">
+   nan
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pair">
+   pair
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parcoord">
+   parcoord
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="corr">
+<h2>corr<a class="headerlink" href="#corr" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="altair_ally.eda_plots.corr">
+<code class="sig-name descname"><span class="pre">corr</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['pearson',</span> <span class="pre">'spearman']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'circle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mouseover'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#corr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.corr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the pairwise correlations between columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
+<li><p><strong>corr_types</strong> (<em>list of</em><em> (</em><em>str</em><em> or </em><em>function</em><em>)</em>) – Which correlations to calculate.
+Anything that is accepted by DataFrame.corr.</p></li>
+<li><p><strong>mark</strong> (<em>str</em>) – Shape of the points. Passed to Chart.
+One of “circle”, “square”, “tick”, or “point”.</p></li>
+<li><p><strong>select_on</strong> (<em>str</em>) – When to highlight points across plots.
+A string representing a vega event stream,
+e.g. ‘click’ or ‘mouseover’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ConcatChart</em> – Concatenated Chart of the correlation plots laid out in a single row.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="dist">
+<h2>dist<a class="headerlink" href="#dist" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="altair_ally.eda_plots.dist">
+<code class="sig-name descname"><span class="pre">dist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'number'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the distribution of each dataframe column.</p>
+<p>Can visualize univariate distributions
+of either numerical or categorical variables
+depending on which <strong>dtype</strong> is used.
+Numercial distributions can be plotted as either density plots or histograms,
+depending on which <strong>mark</strong> is used.
+Since density plots can be misleadingly smooth with small datasets,
+a rug plot is included by default to indicate the number of observations in the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
+<li><p><strong>color_col</strong> (<em>str</em>) – Column in <strong>data</strong> used for the color encoding.</p></li>
+<li><p><strong>mark</strong> (<em>str</em>) – Wether to plot a density plot (‘area’),
+or a histogram / barplot of counts (‘bar’).
+The default is to use an area for numerical variables,
+and a barplot for categorical variables.</p></li>
+<li><p><strong>dtype</strong> (<em>str</em><em> or </em><em>type</em>) – Which column types to plot, passed to DataFrame.select_dtypes.
+If ‘object’, ‘category’, or ‘bool’,
+a barplot of counts for each categorical value will be plotted.</p></li>
+<li><p><strong>columns</strong> (<em>int</em>) – The number of columns in the plot grid.
+The default is to create an as square grid as possible.</p></li>
+<li><p><strong>rug</strong> (<em>bool</em>) – Wether to include a rug plot or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ConcatChart</em> – Concatenated Chart of the distribution plots laid out in a square grid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="heatmap">
+<h2>heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="altair_ally.eda_plots.heatmap">
+<code class="sig-name descname"><span class="pre">heatmap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min-max'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.heatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the values of all columns and observations as a heatmap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
+<li><p><strong>color_col</strong> (<em>str</em>) – Which column in <strong>data</strong> to use for the color encoding.
+Helpful to investigate if a categorical column is correlated
+with the value arrangement in the numerical columns.</p></li>
+<li><p><strong>sort</strong> (<em>str</em>) – Which column in <strong>data</strong> to use for sorting the observations.
+This can be helpful to see patterns in which columns look similar when sorted.</p></li>
+<li><p><strong>rescale</strong> (<em>str</em><em> or </em><em>fun</em>) – How to rescale the values before plotting them.
+Ensures that one column does not dominate the plot.
+One of ‘min-max’, ‘mean-sd’, or a custom function.
+‘min-max` rescales the data to lie in the range 0-1.
+‘mean-sd’ rescales the data to have mean 0 and sd 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Chart or ConcatChart</em> – Single Chart with observed values if no color encoding is used,
+else concatenated Chart including categorical colors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="nan">
+<h2>nan<a class="headerlink" href="#nan" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="altair_ally.eda_plots.nan">
+<code class="sig-name descname"><span class="pre">nan</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.nan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot indiviudal missing values and overall counts for each column.</p>
+<p>There is a default interaction defined where selections in the heatmap
+will update the counts in the barplot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>DataFrame</em>) – Pandas input dataframe.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ConcatChart</em> – Concatenated Altair chart with individual NaNs and overall counts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="pair">
+<h2>pair<a class="headerlink" href="#pair" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="altair_ally.eda_plots.pair">
+<code class="sig-name descname"><span class="pre">pair</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tooltip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'point'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create pairwise scatter plots of all column combinations.</p>
+<p>In contrast to many other pairplot tools,
+this function creates a single scatter plot per column pair,
+and no distribution plots along the diagonal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
+<li><p><strong>color_col</strong> (<em>str</em>) – Column in <strong>data</strong> used for the color encoding.</p></li>
+<li><p><strong>tooltip</strong> (<em>str</em>) – Column in <strong>data</strong> used for the tooltip encoding.</p></li>
+<li><p><strong>mark</strong> (<em>str</em>) – Shape of the points. Passed to Chart.
+One of “circle”, “square”, “tick”, or “point”.</p></li>
+<li><p><strong>width</strong> (<em>int</em><em> or </em><em>float</em>) – Chart width.</p></li>
+<li><p><strong>height</strong> (<em>int</em><em> or </em><em>float</em>) – Chart height.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ConcatChart</em> – Concatenated Chart of pairwise column scatter plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="parcoord">
+<h2>parcoord<a class="headerlink" href="#parcoord" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="altair_ally.eda_plots.parcoord">
+<code class="sig-name descname"><span class="pre">parcoord</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min-max'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#parcoord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.parcoord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the values of all columns and observations as a parallel coordinates plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
+<li><p><strong>color_col</strong> (<em>str</em>) – Which column in <strong>data</strong> to use for the color encoding.</p></li>
+<li><p><strong>rescale</strong> (<em>str</em><em> or </em><em>fun</em>) – How to rescale the values before plotting them.
+Ensures that one column does not dominate the plot.
+One of ‘min-max’, ‘mean-sd’, or a custom function.
+‘min-max` rescales the data to lie in the range 0-1.
+‘mean-sd’ rescales the data to have mean 0 and sd 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Chart</em> – Chart with one x-value per column and one line per row in <strong>data</strong>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="examples.html" title="previous page">Examples</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Joel Ostblom<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>
