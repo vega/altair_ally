@@ -73,6 +73,8 @@
         <div class="navbar-brand-box">
 <a class="navbar-brand text-wrap" href="../../index.html">
   
+  <img src="../../_static/altair-hist.png" class="logo" alt="logo">
+  
   
   <h1 class="site-logo" id="site-title">Altair Ally</h1>
   
@@ -172,7 +174,7 @@
               <div>
                 
   <h1>Source code for altair_ally.eda_plots</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">cycle</span>
 
 <span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -347,7 +349,9 @@
             <span class="k">return</span> <span class="n">alt</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="o">*</span><span class="n">subplot_row</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span><span class="c1">#.configure_view(strokeWidth=0)</span></div>
 
 
-<div class="viewcode-block" id="heatmap"><a class="viewcode-back" href="../../api.html#altair_ally.eda_plots.heatmap">[docs]</a><span class="k">def</span> <span class="nf">heatmap</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rescale</span><span class="o">=</span><span class="s1">&#39;min-max&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="heatmap"><a class="viewcode-back" href="../../api.html#altair_ally.eda_plots.heatmap">[docs]</a><span class="k">def</span> <span class="nf">heatmap</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rescale</span><span class="o">=</span><span class="s1">&#39;min-max&#39;</span><span class="p">,</span>
+            <span class="n">cat_schemes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tableau10&#39;</span><span class="p">,</span> <span class="s1">&#39;set2&#39;</span><span class="p">,</span> <span class="s1">&#39;accent&#39;</span><span class="p">],</span>
+            <span class="n">num_scheme</span><span class="o">=</span><span class="s1">&#39;yellowgreenblue&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot the values of all columns and observations as a heatmap.</span>
 
@@ -359,8 +363,8 @@
 <span class="sd">        Which column in **data** to use for the color encoding.</span>
 <span class="sd">        Helpful to investigate if a categorical column is correlated</span>
 <span class="sd">        with the value arrangement in the numerical columns.</span>
-<span class="sd">    sort: str</span>
-<span class="sd">        Which column in **data** to use for sorting the observations.</span>
+<span class="sd">    sort: str or list of str</span>
+<span class="sd">        Which column(s) in **data** to use for sorting the observations.</span>
 <span class="sd">        This can be helpful to see patterns in which columns look similar when sorted.</span>
 <span class="sd">    rescale : str or fun</span>
 <span class="sd">        How to rescale the values before plotting them.</span>
@@ -368,6 +372,13 @@
 <span class="sd">        One of &#39;min-max&#39;, &#39;mean-sd&#39;, or a custom function.</span>
 <span class="sd">        &#39;min-max` rescales the data to lie in the range 0-1.</span>
 <span class="sd">        &#39;mean-sd&#39; rescales the data to have mean 0 and sd 1.</span>
+<span class="sd">    cat_schemes : list of str</span>
+<span class="sd">        Color schemes to use for each of the categorical heatmaps.</span>
+<span class="sd">        Cycles through when shorter than **color_col**,</span>
+<span class="sd">        so set to a list with a single item</span>
+<span class="sd">        if you want to use the same color scheme for all categorical heatmaps.</span>
+<span class="sd">    num_scheme : str</span>
+<span class="sd">        Color scheme to use for the numerical heatmap.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -388,10 +399,10 @@
     <span class="k">elif</span> <span class="n">rescale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;not supported&#39;</span><span class="p">)</span>
         
-    <span class="c1"># data = data.sort_values(&#39;MPAA Rating&#39;)</span>
     <span class="k">if</span> <span class="n">sort</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># TODO autosort on color? then there is no way to not sort unless chnge paarm to &#39;auto&#39;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">sort</span><span class="p">)</span>
 
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">num_scheme</span><span class="p">)</span>
     <span class="n">num_heatmap</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">num_cols</span><span class="p">])</span><span class="o">.</span><span class="n">transform_window</span><span class="p">(</span>
             <span class="n">index</span><span class="o">=</span><span class="s1">&#39;count()&#39;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
@@ -399,24 +410,33 @@
         <span class="p">)</span><span class="o">.</span><span class="n">mark_rect</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
             <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;key:N&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
             <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;index:O&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-            <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;value:Q&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Legend</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;gradient&#39;</span><span class="p">)),</span>
-            <span class="n">alt</span><span class="o">.</span><span class="n">Stroke</span><span class="p">(</span><span class="s1">&#39;value:Q&#39;</span><span class="p">)</span>
+            <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;value:Q&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Legend</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;gradient&#39;</span><span class="p">)),</span>
+            <span class="n">alt</span><span class="o">.</span><span class="n">Stroke</span><span class="p">(</span><span class="s1">&#39;value:Q&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">),</span>
+            <span class="n">alt</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span><span class="s1">&#39;value:Q&#39;</span><span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">heatmap_width</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">color_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">num_heatmap</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">cat_heatmap</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">[[</span><span class="n">color_col</span><span class="p">]])</span><span class="o">.</span><span class="n">transform_window</span><span class="p">(</span>
-            <span class="n">index</span><span class="o">=</span><span class="s1">&#39;count()&#39;</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">color_col</span><span class="p">]</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">mark_rect</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-            <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;key:N&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-            <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;index:O&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-            <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;value:N&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Legend</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)),</span>
-            <span class="n">alt</span><span class="o">.</span><span class="n">Stroke</span><span class="p">(</span><span class="s1">&#39;value:N&#39;</span><span class="p">)</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">heatmap_width</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">num_heatmap</span> <span class="o">&amp;</span> <span class="n">cat_heatmap</span></div>
+        <span class="n">color_cols</span> <span class="o">=</span> <span class="n">color_col</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">color_col</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">color_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_col</span><span class="p">]</span>
+        <span class="n">cat_heatmaps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">color_col</span><span class="p">,</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">color_cols</span><span class="p">,</span> <span class="n">cycle</span><span class="p">(</span><span class="n">cat_schemes</span><span class="p">)):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
+            <span class="n">color_col</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_col</span><span class="p">]</span>
+            <span class="n">cat_heatmaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">color_col</span><span class="p">])</span><span class="o">.</span><span class="n">transform_window</span><span class="p">(</span>
+                <span class="n">index</span><span class="o">=</span><span class="s1">&#39;count()&#39;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+                <span class="n">color_col</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">mark_rect</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;key:N&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+                <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;index:O&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+                <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;value:N&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">scheme</span><span class="p">),</span> <span class="n">legend</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Legend</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">5</span><span class="p">)),</span>
+                <span class="n">alt</span><span class="o">.</span><span class="n">Stroke</span><span class="p">(</span><span class="s1">&#39;value:N&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">scheme</span><span class="p">)),</span>
+                <span class="n">alt</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span><span class="s1">&#39;value:N&#39;</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">heatmap_width</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">alt</span><span class="o">.</span><span class="n">vconcat</span><span class="p">(</span><span class="n">num_heatmap</span><span class="p">,</span> <span class="o">*</span><span class="n">cat_heatmaps</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="nan"><a class="viewcode-back" href="../../api.html#altair_ally.eda_plots.nan">[docs]</a><span class="k">def</span> <span class="nf">nan</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>

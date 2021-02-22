@@ -74,6 +74,8 @@
         <div class="navbar-brand-box">
 <a class="navbar-brand text-wrap" href="index.html">
   
+  <img src="_static/altair-hist.png" class="logo" alt="logo">
+  
   
   <h1 class="site-logo" id="site-title">Altair Ally</h1>
   
@@ -297,7 +299,7 @@ The default is to create an as square grid as possible.</p></li>
 <h2>heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="altair_ally.eda_plots.heatmap">
-<code class="sig-name descname"><span class="pre">heatmap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min-max'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.heatmap" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">heatmap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min-max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cat_schemes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['tableau10',</span> <span class="pre">'set2',</span> <span class="pre">'accent']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yellowgreenblue'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.heatmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the values of all columns and observations as a heatmap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -306,13 +308,18 @@ The default is to create an as square grid as possible.</p></li>
 <li><p><strong>color_col</strong> (<em>str</em>) – Which column in <strong>data</strong> to use for the color encoding.
 Helpful to investigate if a categorical column is correlated
 with the value arrangement in the numerical columns.</p></li>
-<li><p><strong>sort</strong> (<em>str</em>) – Which column in <strong>data</strong> to use for sorting the observations.
+<li><p><strong>sort</strong> (<em>str</em><em> or </em><em>list of str</em>) – Which column(s) in <strong>data</strong> to use for sorting the observations.
 This can be helpful to see patterns in which columns look similar when sorted.</p></li>
 <li><p><strong>rescale</strong> (<em>str</em><em> or </em><em>fun</em>) – How to rescale the values before plotting them.
 Ensures that one column does not dominate the plot.
 One of ‘min-max’, ‘mean-sd’, or a custom function.
 ‘min-max` rescales the data to lie in the range 0-1.
 ‘mean-sd’ rescales the data to have mean 0 and sd 1.</p></li>
+<li><p><strong>cat_schemes</strong> (<em>list of str</em>) – Color schemes to use for each of the categorical heatmaps.
+Cycles through when shorter than <strong>color_col</strong>,
+so set to a list with a single item
+if you want to use the same color scheme for all categorical heatmaps.</p></li>
+<li><p><strong>num_scheme</strong> (<em>str</em>) – Color scheme to use for the numerical heatmap.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
