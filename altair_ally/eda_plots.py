@@ -410,6 +410,7 @@ def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150
 
     # Create corner of pair-wise scatters
     i = 0
+    exclude_zero = alt.Scale(zero=False)
     # enh: Have options for different corner alignment of the charts.
     # histograms would look better on top of top corner than under botom corner
     col_combos = list(combinations(cols, 2))[::-1]
@@ -418,19 +419,24 @@ def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150
         plot_column = []
         for num, (y, x) in enumerate(col_combos[:i+1]):
             if num == 0 and i == len(cols) - 2:
-                subplot = alt.Chart(data, mark=mark).encode(x=x, y=y)
+                subplot = alt.Chart(data, mark=mark).encode(
+                    alt.X(x, scale=exclude_zero),
+                    alt.Y(y, scale=exclude_zero))
             elif num == 0:
                 subplot = (
                     alt.Chart(data, mark=mark).encode(
-                        alt.X(x, axis=hidden_axis), alt.Y(y)))
+                        alt.X(x, scale=exclude_zero, axis=hidden_axis),
+                        alt.Y(y, scale=exclude_zero)))
             elif i == len(cols) - 2:
                 subplot = (
                     alt.Chart(data, mark=mark).encode(
-                        alt.X(x), alt.Y(y, axis=hidden_axis)))
+                        alt.X(x, scale=exclude_zero),
+                        alt.Y(y, scale=exclude_zero, axis=hidden_axis)))
             else:
                 subplot = (
                     alt.Chart(data, mark=mark).encode(
-                        alt.X(x, axis=hidden_axis), alt.Y(y, axis=hidden_axis)))
+                        alt.X(x, scale=exclude_zero, axis=hidden_axis),
+                        alt.Y(y, scale=exclude_zero, axis=hidden_axis)))
             plot_column.append(
                 subplot
                 .encode(opacity=opacity, color=color, tooltip=tooltip)
