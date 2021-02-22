@@ -128,13 +128,16 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
     # if mark == 'area':
         # mark = alt.MarkDef(mark, opacity=0.7)
 
+    opacity = 0.7
     # Setting a non-existing column with specified type passes through without effect
     # and eliminates the need to hvae a separate plotting section for colored bars below.
     if color_col is None:
         color_col = ':Q'
+        opacity = 0.9
 
     if dtype in ['category', 'object', 'bool']:
         # Counts of categorical distributions
+                # TODO add count label on y-axis or write in docstring what it is use configure to add it
         if mark != 'bar':
             print("Only bar mark supported")
         else:
@@ -157,25 +160,27 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
 
     else:  # TODO don't support dates...
         # Histograms
+        # TODO add count label on y-axis or write in docstring what it is use configure to add it
         if mark == 'bar':
-            return (alt.Chart(data).mark_bar().encode(
+            return (alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).encode(
                 alt.X(alt.repeat(), type='quantitative', bin=bins),
                 alt.Y('count()', title='', stack=None),
                 alt.Color(color_col))
             .properties(width=185, height=120)
-            .repeat(data.select_dtypes(dtype).columns.tolist()[::-1], columns=columns))
+            .repeat(selected_data.columns.tolist()[::-1], columns=columns))
 
         # Density plots
+        # TODO add density label on y-axis
         elif mark in ['area', 'line']: 
             subplot_row = []
-            for col in data.select_dtypes(dtype).columns.tolist()[::-1]:
+            for col in selected_data.columns.tolist()[::-1]:
                 subplot = (
-                    alt.Chart(data, mark=mark).transform_density(
+                    alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).transform_density(
                     col, [col, 'density'], groupby=[color_col], minsteps=100)
                     .encode(
                     alt.X(col, axis=alt.Axis(grid=False)),
                     alt.Y('density:Q', title=None),
-                    alt.Color(color_col))
+                    alt.Color(color_col, title=None))
         #              alt.Y('density:Q', title=None, axis=alt.Axis(labels=False, ticks=False, grid=False)))
         #              alt.Y('density:Q', title=None, axis=None)) #alt.Axis(labels=False, ticks=False, )))
                 .properties(width=185, height=120))
@@ -199,7 +204,7 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max',
     data : DataFrame
         pandas DataFrame with input data.
     color_col: str
-        Which column in **data** to use for the color encoding.
+        Which column(s) in **data** to use for the color encoding.
         Helpful to investigate if a categorical column is correlated
         with the value arrangement in the numerical columns.
     sort: str or list of str
@@ -208,9 +213,10 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max',
     rescale : str or fun
         How to rescale the values before plotting them.
         Ensures that one column does not dominate the plot.
-        One of 'min-max', 'mean-sd', or a custom function.
+        One of 'min-max', 'mean-sd', None, or a custom function.
         'min-max` rescales the data to lie in the range 0-1.
         'mean-sd' rescales the data to have mean 0 and sd 1.
+        None uses the raw values.
     cat_schemes : list of str
         Color schemes to use for each of the categorical heatmaps.
         Cycles through when shorter than **color_col**,
