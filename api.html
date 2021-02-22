@@ -74,8 +74,6 @@
         <div class="navbar-brand-box">
 <a class="navbar-brand text-wrap" href="index.html">
   
-  <img src="_static/altair-hist.png" class="logo" alt="logo">
-  
   
   <h1 class="site-logo" id="site-title">Altair Ally</h1>
   
@@ -305,16 +303,17 @@ The default is to create an as square grid as possible.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
-<li><p><strong>color_col</strong> (<em>str</em>) – Which column in <strong>data</strong> to use for the color encoding.
+<li><p><strong>color_col</strong> (<em>str</em>) – Which column(s) in <strong>data</strong> to use for the color encoding.
 Helpful to investigate if a categorical column is correlated
 with the value arrangement in the numerical columns.</p></li>
 <li><p><strong>sort</strong> (<em>str</em><em> or </em><em>list of str</em>) – Which column(s) in <strong>data</strong> to use for sorting the observations.
 This can be helpful to see patterns in which columns look similar when sorted.</p></li>
 <li><p><strong>rescale</strong> (<em>str</em><em> or </em><em>fun</em>) – How to rescale the values before plotting them.
 Ensures that one column does not dominate the plot.
-One of ‘min-max’, ‘mean-sd’, or a custom function.
+One of ‘min-max’, ‘mean-sd’, None, or a custom function.
 ‘min-max` rescales the data to lie in the range 0-1.
-‘mean-sd’ rescales the data to have mean 0 and sd 1.</p></li>
+‘mean-sd’ rescales the data to have mean 0 and sd 1.
+None uses the raw values.</p></li>
 <li><p><strong>cat_schemes</strong> (<em>list of str</em>) – Color schemes to use for each of the categorical heatmaps.
 Cycles through when shorter than <strong>color_col</strong>,
 so set to a list with a single item

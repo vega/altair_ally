@@ -73,8 +73,6 @@
         <div class="navbar-brand-box">
 <a class="navbar-brand text-wrap" href="../../index.html">
   
-  <img src="../../_static/altair-hist.png" class="logo" alt="logo">
-  
   
   <h1 class="site-logo" id="site-title">Altair Ally</h1>
   
@@ -284,9 +282,14 @@
 
     <span class="n">bins</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="c1"># bins = alt.Bin(maxbins=30)</span>
+    <span class="c1"># Layout out in a single row for up to 3 columns, after that switch to a squareish grid</span>
+    <span class="n">selected_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">columns</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Ceil sqrt</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">size</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">//</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">selected_data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="n">select_data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Ceil sqrt</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">selected_data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">size</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">//</span> <span class="mi">1</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">mark</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;number&#39;</span><span class="p">:</span>  <span class="c1"># support floats etc</span>
@@ -299,44 +302,59 @@
     <span class="c1"># if mark == &#39;area&#39;:</span>
         <span class="c1"># mark = alt.MarkDef(mark, opacity=0.7)</span>
 
+    <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.7</span>
     <span class="c1"># Setting a non-existing column with specified type passes through without effect</span>
     <span class="c1"># and eliminates the need to hvae a separate plotting section for colored bars below.</span>
     <span class="k">if</span> <span class="n">color_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">color_col</span> <span class="o">=</span> <span class="s1">&#39;:Q&#39;</span>
+        <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.9</span>
 
     <span class="k">if</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="s1">&#39;bool&#39;</span><span class="p">]:</span>
         <span class="c1"># Counts of categorical distributions</span>
+                <span class="c1"># TODO add count label on y-axis or write in docstring what it is use configure to add it</span>
         <span class="k">if</span> <span class="n">mark</span> <span class="o">!=</span> <span class="s1">&#39;bar&#39;</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Only bar mark supported&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-                <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-                <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">repeat</span><span class="p">(),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;nominal&#39;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-                <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">color_col</span><span class="p">))</span>
-            <span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">))</span>
-  
+            <span class="n">charts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">selected_data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">charts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">alt</span><span class="o">.</span><span class="n">vconcat</span><span class="p">(</span>
+                        <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                        <span class="n">x</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">),</span>
+                        <span class="n">y</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">color_col</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Axis</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+                        <span class="n">color</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">color_col</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+                        <span class="n">row</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">header</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Header</span><span class="p">(</span><span class="n">labelAngle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelAlign</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">labelPadding</span><span class="o">=</span><span class="mi">5</span><span class="p">))),</span>
+                    <span class="n">title</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">TitleParams</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">)))</span>
+
+            <span class="k">return</span> <span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="o">*</span><span class="n">charts</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">configure_facet</span><span class="p">(</span><span class="n">spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">configure_view</span><span class="p">(</span><span class="n">stroke</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">configure_scale</span><span class="p">(</span><span class="n">bandPaddingInner</span><span class="o">=</span><span class="mf">0.06</span><span class="p">,</span> <span class="n">bandPaddingOuter</span><span class="o">=</span><span class="mf">0.4</span><span class="p">))</span>
+
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># TODO don&#39;t support dates...</span>
         <span class="c1"># Histograms</span>
+        <span class="c1"># TODO add count label on y-axis or write in docstring what it is use configure to add it</span>
         <span class="k">if</span> <span class="n">mark</span> <span class="o">==</span> <span class="s1">&#39;bar&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">MarkDef</span><span class="p">(</span><span class="n">mark</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="n">opacity</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
                 <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">repeat</span><span class="p">(),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;quantitative&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">bins</span><span class="p">),</span>
                 <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
                 <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">color_col</span><span class="p">))</span>
             <span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">185</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">selected_data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">))</span>
 
         <span class="c1"># Density plots</span>
+        <span class="c1"># TODO add density label on y-axis</span>
         <span class="k">elif</span> <span class="n">mark</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">]:</span> 
             <span class="n">subplot_row</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">selected_data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="n">subplot</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="n">mark</span><span class="p">)</span><span class="o">.</span><span class="n">transform_density</span><span class="p">(</span>
+                    <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">MarkDef</span><span class="p">(</span><span class="n">mark</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="n">opacity</span><span class="p">))</span><span class="o">.</span><span class="n">transform_density</span><span class="p">(</span>
                     <span class="n">col</span><span class="p">,</span> <span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">],</span> <span class="n">groupby</span><span class="o">=</span><span class="p">[</span><span class="n">color_col</span><span class="p">],</span> <span class="n">minsteps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
                     <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
                     <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Axis</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
                     <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;density:Q&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-                    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">color_col</span><span class="p">))</span>
+                    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">color_col</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
         <span class="c1">#              alt.Y(&#39;density:Q&#39;, title=None, axis=alt.Axis(labels=False, ticks=False, grid=False)))</span>
         <span class="c1">#              alt.Y(&#39;density:Q&#39;, title=None, axis=None)) #alt.Axis(labels=False, ticks=False, )))</span>
                 <span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">185</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">120</span><span class="p">))</span>
@@ -360,7 +378,7 @@
 <span class="sd">    data : DataFrame</span>
 <span class="sd">        pandas DataFrame with input data.</span>
 <span class="sd">    color_col: str</span>
-<span class="sd">        Which column in **data** to use for the color encoding.</span>
+<span class="sd">        Which column(s) in **data** to use for the color encoding.</span>
 <span class="sd">        Helpful to investigate if a categorical column is correlated</span>
 <span class="sd">        with the value arrangement in the numerical columns.</span>
 <span class="sd">    sort: str or list of str</span>
@@ -369,9 +387,10 @@
 <span class="sd">    rescale : str or fun</span>
 <span class="sd">        How to rescale the values before plotting them.</span>
 <span class="sd">        Ensures that one column does not dominate the plot.</span>
-<span class="sd">        One of &#39;min-max&#39;, &#39;mean-sd&#39;, or a custom function.</span>
+<span class="sd">        One of &#39;min-max&#39;, &#39;mean-sd&#39;, None, or a custom function.</span>
 <span class="sd">        &#39;min-max` rescales the data to lie in the range 0-1.</span>
 <span class="sd">        &#39;mean-sd&#39; rescales the data to have mean 0 and sd 1.</span>
+<span class="sd">        None uses the raw values.</span>
 <span class="sd">    cat_schemes : list of str</span>
 <span class="sd">        Color schemes to use for each of the categorical heatmaps.</span>
 <span class="sd">        Cycles through when shorter than **color_col**,</span>
@@ -386,6 +405,7 @@
 <span class="sd">        Single Chart with observed values if no color encoding is used,</span>
 <span class="sd">        else concatenated Chart including categorical colors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">num_cols</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
     <span class="n">heatmap_width</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># TODO rename color_col to color or color_by everywhere</span>
@@ -423,7 +443,6 @@
             <span class="n">color_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_col</span><span class="p">]</span>
         <span class="n">cat_heatmaps</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">color_col</span><span class="p">,</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">color_cols</span><span class="p">,</span> <span class="n">cycle</span><span class="p">(</span><span class="n">cat_schemes</span><span class="p">)):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
             <span class="n">color_col</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_col</span><span class="p">]</span>
             <span class="n">cat_heatmaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">color_col</span><span class="p">])</span><span class="o">.</span><span class="n">transform_window</span><span class="p">(</span>
                 <span class="n">index</span><span class="o">=</span><span class="s1">&#39;count()&#39;</span>
@@ -458,6 +477,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cols_with_nans</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()]</span>
     <span class="n">heatmap_width</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># TODO can transform_fold be used here too?</span>
     <span class="c1"># Long form data</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">data</span><span class="p">[</span><span class="n">cols_with_nans</span><span class="p">]</span>
@@ -564,6 +584,7 @@
 
     <span class="c1"># Create corner of pair-wise scatters</span>
     <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">exclude_zero</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">zero</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># enh: Have options for different corner alignment of the charts.</span>
     <span class="c1"># histograms would look better on top of top corner than under botom corner</span>
     <span class="n">col_combos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="mi">2</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -572,19 +593,24 @@
         <span class="n">plot_column</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">col_combos</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">subplot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="n">mark</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+                <span class="n">subplot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="n">mark</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">exclude_zero</span><span class="p">),</span>
+                    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">exclude_zero</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">subplot</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="n">mark</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-                        <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">hidden_axis</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+                        <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">exclude_zero</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">hidden_axis</span><span class="p">),</span>
+                        <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">exclude_zero</span><span class="p">)))</span>
             <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">subplot</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="n">mark</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-                        <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">hidden_axis</span><span class="p">)))</span>
+                        <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">exclude_zero</span><span class="p">),</span>
+                        <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">exclude_zero</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">hidden_axis</span><span class="p">)))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">subplot</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="n">mark</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-                        <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">hidden_axis</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">hidden_axis</span><span class="p">)))</span>
+                        <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">exclude_zero</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">hidden_axis</span><span class="p">),</span>
+                        <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">exclude_zero</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">hidden_axis</span><span class="p">)))</span>
             <span class="n">plot_column</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">subplot</span>
                 <span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">opacity</span><span class="o">=</span><span class="n">opacity</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="n">tooltip</span><span class="p">)</span>
@@ -620,6 +646,7 @@
 <span class="sd">    Chart</span>
 <span class="sd">        Chart with one x-value per column and one line per row in **data**.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="c1"># Setting a non-existing column with specified type passes through without effect</span>
     <span class="c1"># and eliminates the need to hvae a separate plotting section for colored bars below.</span>
     <span class="k">if</span> <span class="n">color_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

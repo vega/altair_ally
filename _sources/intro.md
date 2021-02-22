@@ -2,7 +2,8 @@
 
 Altair Ally ("Aly" for short) is an companion package to Altair,
 which provides a few shortcuts to create common plots
-for exploratory data analysis (EDA).
+for exploratory data analysis (EDA),
+particularly those involving looking at the entire dataset.
 The goal is to encourage good EDA habits
 by making it quick and simple to create these visualizations,
 and to provide useful default interactions with the plots.
