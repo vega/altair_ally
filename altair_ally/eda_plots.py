@@ -231,6 +231,7 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max',
         Single Chart with observed values if no color encoding is used,
         else concatenated Chart including categorical colors.
     """
+    data = data.copy()
     num_cols = data.select_dtypes('number').columns.to_list()
     heatmap_width = data.shape[0]
     # TODO rename color_col to color or color_by everywhere
@@ -268,7 +269,6 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max',
             color_cols = [color_col]
         cat_heatmaps = []
         for color_col, scheme in zip(color_cols, cycle(cat_schemes)):
-            print(scheme)
             color_col = [color_col]
             cat_heatmaps.append(alt.Chart(data[color_col]).transform_window(
                 index='count()'
@@ -303,6 +303,7 @@ def nan(data):
     """
     cols_with_nans = data.columns[data.isna().any()]
     heatmap_width = data.shape[0]
+    # TODO can transform_fold be used here too?
     # Long form data
     data = (
         data[cols_with_nans]
@@ -465,6 +466,7 @@ def parcoord(data, color_col=None, rescale='min-max'):
     Chart
         Chart with one x-value per column and one line per row in **data**.
     """
+    data = data.copy()
     # Setting a non-existing column with specified type passes through without effect
     # and eliminates the need to hvae a separate plotting section for colored bars below.
     if color_col is None:
