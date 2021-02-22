@@ -138,13 +138,23 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
         if mark != 'bar':
             print("Only bar mark supported")
         else:
-            return (alt.Chart(data).mark_bar().encode(
-                alt.X('count()', title='', stack=None),
-                alt.Y(alt.repeat(), type='nominal', sort='x', title=None),
-                alt.Color(color_col))
-            .properties(width=120)
-            .repeat(data.select_dtypes(dtype).columns.tolist()[::-1], columns=columns))
-  
+            charts = []
+            for col in selected_data.columns:
+                charts.append(
+                    alt.vconcat(
+                        alt.Chart(data.sample(data.shape[0]), width=120).mark_bar().encode(
+                        x=alt.X('count()'),
+                        y=alt.Y(color_col, title=None, axis=alt.Axis(domain=True, title='', labels=False, ticks=False)),
+                        color=alt.Color(color_col, title=None),
+                        row=alt.Row(col, title=None,
+                                    header=alt.Header(labelAngle=0, labelAlign='left', labelPadding=5))),
+                    title=alt.TitleParams(col, anchor='middle')))
+
+            return (alt.concat(*charts, columns=columns)
+            .configure_facet(spacing=0)
+            .configure_view(stroke=None)
+            .configure_scale(bandPaddingInner=0.06, bandPaddingOuter=0.4))
+
     else:  # TODO don't support dates...
         # Histograms
         if mark == 'bar':
