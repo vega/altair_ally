@@ -108,9 +108,14 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
 
     bins = True
     # bins = alt.Bin(maxbins=30)
+    # Layout out in a single row for up to 3 columns, after that switch to a squareish grid
+    selected_data = data.select_dtypes(dtype)
     if columns == None:
-        # Ceil sqrt
-        columns = int(-(-data.select_dtypes(dtype).columns.size ** (1/2) // 1))
+        if selected_data.columns.size <= 3:
+            columns = select_data.columns.size
+        else:
+            # Ceil sqrt
+            columns = int(-(-selected_data.columns.size ** (1/2) // 1))
 
     if mark is None:
         if dtype == 'number':  # support floats etc
