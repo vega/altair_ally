@@ -1,11 +1,11 @@
 # Altair Ally
 
-*This package is in early development and its name, API, etc might change rapidly.*
+*This package is in early development and its name, API, etc might change rapidly. It is not yet on PyPI.*
 
 Altair Ally ("Aly" for short) is an companion package to Altair,
 which provides a few shortcuts to create common plots
 for exploratory data analysis (EDA),
-particularly those involving looking at the entire dataset.
+particularly those involving visualizing an entire dataset.
 The goal is to encourage good EDA habits
 by making it quick and simple to create these visualizations,
 and to provide useful default interactions with the plots.
