@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question
+    url: https://stackoverflow.com/tags/altair_ally
+    about: Please ask questions such as "How do I do X?" or "Why does this not work?" on Stack Overflow using the `altair-ally` tag.
+  - name: Discussion
+    url: https://github.com/joelostblom/altair_ally/discussions
+    about: If you want to start a discussion or ask something that you don't think is a good fit for Stack Overflow, please open a new disscussion here on GitHub.
