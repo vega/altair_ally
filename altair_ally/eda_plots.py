@@ -4,9 +4,7 @@ import altair as alt
 import numpy as np
 
 
-# note about melting and altair data server
-# enf: include some themes? or straight toaltari?
-# enh: add chart width config for each
+# TODO show examples of how to set chart width etc, might need to add a param
 def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mouseover'):
     """
     Plot the pairwise correlations between columns.
@@ -31,7 +29,7 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
     ConcatChart
         Concatenated Chart of the correlation plots laid out in a single row.
     """
-    # TODO support NA, maybe via aly.corr(movies.isna())
+    # TODO support correlation of NA values, maybe via aly.corr(movies.isna())
     hover = alt.selection_multi(fields=['variable', 'index'], on=select_on, nearest=True, empty='all')
 
     subplot_row = []
@@ -52,20 +50,19 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
         subplot_row.append(
             alt.Chart(corr2, mark=mark, title=f'{corr_type.capitalize()} correlations')
             .transform_calculate(
-            abs_value='abs(datum.value)')
-         .encode(
-            alt.X('index', sort=ind_sort, title=''),
-            alt.Y('variable', sort=var_sort[::-1], title='', axis=yaxis),
-#     alt.Color('value', title=[corr_type.capitalize(), 'coefficient'], scale=alt.Scale(domain=[-1, 1], scheme='blueorange')),
-            alt.Color('value', title='', scale=alt.Scale(domain=[-1, 1], scheme='blueorange')),
-            alt.Size('abs_value:Q', scale=alt.Scale(domain=[0, 1]), legend=None),
-            alt.Tooltip('value', format='.2f'),
-            opacity = alt.condition(hover, alt.value(0.9), alt.value(0.2))).add_selection(hover))#.properties(width=300, height=300)
+                abs_value='abs(datum.value)')
+            .encode(
+               alt.X('index', sort=ind_sort, title=''),
+               alt.Y('variable', sort=var_sort[::-1], title='', axis=yaxis),
+               alt.Color('value', title='', scale=alt.Scale(domain=[-1, 1], scheme='blueorange')),
+               alt.Size('abs_value:Q', scale=alt.Scale(domain=[0, 1]), legend=None),
+               alt.Tooltip('value', format='.2f'),
+               opacity=alt.condition(hover, alt.value(0.9), alt.value(0.2))).add_selection(hover))
 
     return alt.concat(*subplot_row).resolve_axis(y='shared').configure_view(strokeWidth=0)
 
 
-def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True):
+def dist(data, color=None, mark=None, dtype='number', columns=None, rug=True):
     """
     Plot the distribution of each dataframe column.
 
@@ -81,7 +78,7 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
     ----------
     data : DataFrame
         pandas DataFrame with input data.
-    color_col : str
+    color : str
         Column in **data** used for the color encoding.
     mark : str
         Wether to plot a density plot ('area'),
@@ -103,14 +100,12 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
     ConcatChart
         Concatenated Chart of the distribution plots laid out in a square grid.
     """
-    # TODO column_wrap instead of columns?
     # TODO add clickable legend
-
     bins = True
     # bins = alt.Bin(maxbins=30)
     # Layout out in a single row for up to 3 columns, after that switch to a squareish grid
     selected_data = data.select_dtypes(dtype)
-    if columns == None:
+    if columns is None:
         if selected_data.columns.size <= 3:
             columns = selected_data.columns.size
         else:
@@ -118,12 +113,12 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
             columns = int(-(-selected_data.columns.size ** (1/2) // 1))
 
     if mark is None:
-        if dtype == 'number':  # support floats etc
+        if dtype == 'number':  # TODO support floats etc
             mark = 'area'
         elif dtype in ['category', 'object', 'bool']:
             mark = 'bar'
 
-    if not mark in ['area', 'line', 'bar', 'point']:
+    if mark not in ['area', 'line', 'bar', 'point']:
         print('not supported')
     # if mark == 'area':
         # mark = alt.MarkDef(mark, opacity=0.7)
@@ -131,13 +126,13 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
     opacity = 0.7
     # Setting a non-existing column with specified type passes through without effect
     # and eliminates the need to hvae a separate plotting section for colored bars below.
-    if color_col is None:
-        color_col = ':Q'
+    if color is None:
+        color = ':Q'
         opacity = 0.9
 
     if dtype in ['category', 'object', 'bool']:
         # Counts of categorical distributions
-                # TODO add count label on y-axis or write in docstring what it is use configure to add it
+        # TODO add count label on y-axis or write in docstring what it is use configure to add it
         if mark != 'bar':
             print("Only bar mark supported")
         else:
@@ -147,8 +142,8 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
                     alt.vconcat(
                         alt.Chart(data.sample(data.shape[0]), width=120).mark_bar().encode(
                             x=alt.X('count()'),
-                            y=alt.Y(color_col, title=None, axis=alt.Axis(domain=True, title='', labels=False, ticks=False)),
-                            color=alt.Color(color_col, title=None),
+                            y=alt.Y(color, title=None, axis=alt.Axis(domain=True, title='', labels=False, ticks=False)),
+                            color=alt.Color(color, title=None),
                             row=alt.Row(col, title=None,
                                         header=alt.Header(labelAngle=0, labelAlign='left', labelPadding=5))),
                         title=alt.TitleParams(col, anchor='middle')))
@@ -167,24 +162,22 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
                 alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).encode(
                     alt.X(alt.repeat(), type='quantitative', bin=bins),
                     alt.Y('count()', title='', stack=None),
-                    alt.Color(color_col))
+                    alt.Color(color))
                 .properties(width=185, height=120)
                 .repeat(selected_data.columns.tolist()[::-1], columns=columns))
 
         # Density plots
-        # TODO add density label on y-axis
+        # TODO add density label on y-axis? Meaningless...
         elif mark in ['area', 'line']:
             subplot_row = []
             for col in selected_data.columns.tolist()[::-1]:
                 subplot = (
                     alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).transform_density(
-                        col, [col, 'density'], groupby=[color_col], minsteps=100)
+                        col, [col, 'density'], groupby=[color], minsteps=100)
                     .encode(
                         alt.X(col, axis=alt.Axis(grid=False)),
                         alt.Y('density:Q', title=None),
-                        alt.Color(color_col, title=None))
-        #              alt.Y('density:Q', title=None, axis=alt.Axis(labels=False, ticks=False, grid=False)))
-        #              alt.Y('density:Q', title=None, axis=None)) #alt.Axis(labels=False, ticks=False, )))
+                        alt.Color(color, title=None))
                     .properties(width=185, height=120))
                 if rug:
                     rugplot = alt.Chart(data).mark_tick(color='black', opacity=0.3, yOffset=60 - 3, height=7).encode(
@@ -192,20 +185,26 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
                     subplot = subplot + rugplot
 
                 subplot_row.append(subplot)
-            return alt.concat(*subplot_row, columns=columns)#.configure_view(strokeWidth=0)
+            return alt.concat(*subplot_row, columns=columns)
 
 
-def heatmap(data, color_col=None, sort=None, rescale='min-max',
+def heatmap(data, color=None, sort=None, rescale='min-max',
             cat_schemes=['tableau10', 'set2', 'accent'],
             num_scheme='yellowgreenblue'):
     """
     Plot the values of all columns and observations as a heatmap.
 
+    This reshapes the dataframe to a longer format,
+    so you might need to disable the max rows warning in Altair
+    or use the 'data-server' backend:
+    `aly.alt.data_transformers.disable_max_rows()` or
+    `aly.alt.data_transformers('data_server')`
+
     Parameters
     ----------
     data : DataFrame
         pandas DataFrame with input data.
-    color_col: str
+    color: str
         Which column(s) in **data** to use for the color encoding.
         Helpful to investigate if a categorical column is correlated
         with the value arrangement in the numerical columns.
@@ -221,7 +220,7 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max',
         None uses the raw values.
     cat_schemes : list of str
         Color schemes to use for each of the categorical heatmaps.
-        Cycles through when shorter than **color_col**,
+        Cycles through when shorter than **color**,
         so set to a list with a single item
         if you want to use the same color scheme for all categorical heatmaps.
     num_scheme : str
@@ -236,18 +235,19 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max',
     data = data.copy()
     num_cols = data.select_dtypes('number').columns.to_list()
     heatmap_width = data.shape[0]
-    # TODO rename color_col to color or color_by everywhere
     # TODO move this to a utils module since it is used in two places now
     if rescale == 'mean-sd':
-        data[num_cols] = data[num_cols].apply(lambda x: (x - x.mean()) / x.std()) 
+        data[num_cols] = data[num_cols].apply(lambda x: (x - x.mean()) / x.std())
     elif rescale == 'min-max':
         data[num_cols] = data[num_cols].apply(lambda x: (x - x.min()) / (x.max() - x.min()))
     elif callable(rescale):
         data[num_cols] = data[num_cols].apply(rescale)
     elif rescale is not None:
         print('not supported')
-        
-    if sort is not None:  # TODO autosort on color? then there is no way to not sort unless chnge paarm to 'auto'
+
+    # TODO autosort on color? then there is no way to not sort unless the
+    # default is changed to 'auto', but there could be name collisions with the columns
+    if sort is not None:
         data = data.sort_values(sort)
 
     scale = alt.Scale(scheme=num_scheme)
@@ -263,23 +263,24 @@ def heatmap(data, color_col=None, sort=None, rescale='min-max',
             alt.Tooltip('value:Q')
     ).properties(width=heatmap_width)
 
-    if color_col is None:
+    if color is None:
         return num_heatmap
     else:
-        color_cols = color_col
-        if isinstance(color_col, str):
-            color_cols = [color_col]
+        colors = color
+        if isinstance(color, str):
+            colors = [color]
         cat_heatmaps = []
-        for color_col, scheme in zip(color_cols, cycle(cat_schemes)):
-            color_col = [color_col]
-            cat_heatmaps.append(alt.Chart(data[color_col]).transform_window(
+        for color, scheme in zip(colors, cycle(cat_schemes)):
+            color = [color]
+            cat_heatmaps.append(alt.Chart(data[color]).transform_window(
                 index='count()'
             ).transform_fold(
-                color_col
+                color
             ).mark_rect(height=16).encode(
                 alt.Y('key:N', title=None),
                 alt.X('index:O', title=None, axis=None),
-                alt.Color('value:N', title=None, scale=alt.Scale(scheme=scheme), legend=alt.Legend(orient='bottom', offset=5)),
+                alt.Color('value:N', title=None, scale=alt.Scale(scheme=scheme),
+                          legend=alt.Legend(orient='bottom', offset=5)),
                 alt.Stroke('value:N', scale=alt.Scale(scheme=scheme)),
                 alt.Tooltip('value:N')
             ).properties(width=heatmap_width))
@@ -328,8 +329,8 @@ def nan(data):
     zoom = alt.selection_interval(encodings=['x'])
     nan_bars = (
         alt.Chart(data.query('value == True'), title='NaN count').mark_bar(color='steelblue', height=17).encode(
-        alt.X('count()', axis=None, scale=alt.Scale(domain=[0, max_nans])),
-        alt.Y('variable', axis=alt.Axis(grid=False, title='', labels=False, ticks=False), sort=sorted_nan_cols))
+            alt.X('count()', axis=None, scale=alt.Scale(domain=[0, max_nans])),
+            alt.Y('variable', axis=alt.Axis(grid=False, title='', labels=False, ticks=False), sort=sorted_nan_cols))
         .properties(width=100))
     nan_bars_with_text = ((
         nan_bars
@@ -340,18 +341,21 @@ def nan(data):
     # Heatmap of individual NaNs
     color_scale = alt.Scale(range=['#dde8f1', 'steelblue'][::1])
 
-    nan_heatmap = alt.Chart(data, title='Individual NaNs').mark_rect(height=17).encode(
-        alt.X('index:O', axis=None),
-        alt.Y('variable', title=None, sort=sorted_nan_cols),
-        alt.Color('value', scale=color_scale, sort=[False, True], legend=alt.Legend(orient='top', offset=-13), title=None),
-        alt.Stroke('value', scale=color_scale, sort=[False, True], legend=None)).properties(width=heatmap_width).add_selection(zoom)
+    nan_heatmap = (
+        alt.Chart(data, title='Individual NaNs').mark_rect(height=17).encode(
+            alt.X('index:O', axis=None),
+            alt.Y('variable', title=None, sort=sorted_nan_cols),
+            alt.Color('value', scale=color_scale, sort=[False, True],
+                      legend=alt.Legend(orient='top', offset=-13), title=None),
+            alt.Stroke('value', scale=color_scale, sort=[False, True], legend=None))
+        .properties(width=heatmap_width).add_selection(zoom))
 
     # Bind bar chart update to zoom in individual chart and add hover to individual chart,
     # configurable column for tooltip, or index
     return (nan_heatmap | nan_bars_with_text).configure_view(strokeWidth=0).resolve_scale(y='shared')
 
 
-def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150):
+def pair(data, color=None, tooltip=None, mark='point', width=150, height=150):
     """
     Create pairwise scatter plots of all column combinations.
 
@@ -363,7 +367,7 @@ def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150
     ----------
     data : DataFrame
         pandas DataFrame with input data.
-    color_col : str
+    color : str
         Column in **data** used for the color encoding.
     tooltip: str
         Column in **data** used for the tooltip encoding.
@@ -380,28 +384,27 @@ def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150
     ConcatChart
         Concatenated Chart of pairwise column scatter plots.
     """
-    # support categorical?
-    col_dtype='number'
-    # enh: zooming wihout panning
-    # color_col = 'species:N'  # must be passed with a type, enh: autoetect 
+    # TODO support categorical?
+    col_dtype = 'number'
+    # color = 'species:N'  # must be passed with a type, enh: autoetect
     # tooltip = alt.Tooltip('species')
     cols = data.select_dtypes(col_dtype).columns
 
     # Setting a non-existing column with specified type passes through without effect
     # and eliminates the need to hvae a separate plotting section for colored bars below.
-    if color_col is None:
-        color_col = ':Q'
+    if color is None:
+        color = ':Q'
     if tooltip is None:
         tooltip = ':Q'
 
-    # Infer color data type if not specified 
-    if color_col[-2:] in [':Q', ':T', ':N', ':O']:
-        color_alt = alt.Color(color_col, title=None, legend=alt.Legend(orient='left', offset=width * -1.6))
+    # Infer color data type if not specified
+    if color[-2:] in [':Q', ':T', ':N', ':O']:
+        color_alt = alt.Color(color, title=None, legend=alt.Legend(orient='left', offset=width * -1.6))
         # The selection fields parmeter does not work with the suffix
-        legend_color = color_col.split(':')[0]
+        legend_color = color.split(':')[0]
     else:
-        color_alt = alt.Color(color_col, title=None, type=alt.utils.infer_vegalite_type(data[color_col]))
-        legend_color = color_col
+        color_alt = alt.Color(color, title=None, type=alt.utils.infer_vegalite_type(data[color]))
+        legend_color = color
 
     # Set up interactions
     brush = alt.selection_interval()
@@ -413,8 +416,6 @@ def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150
     # Create corner of pair-wise scatters
     i = 0
     exclude_zero = alt.Scale(zero=False)
-    # enh: Have options for different corner alignment of the charts.
-    # histograms would look better on top of top corner than under botom corner
     col_combos = list(combinations(cols, 2))[::-1]
     subplot_row = []
     while i < len(cols) - 1:
@@ -452,7 +453,7 @@ def pair(data, color_col=None, tooltip=None, mark='point', width=150, height=150
         .add_selection(brush, legend_click))
 
 
-def parcoord(data, color_col=None, rescale='min-max'):
+def parcoord(data, color=None, rescale='min-max'):
     """
     Plot the values of all columns and observations as a parallel coordinates plot.
 
@@ -460,7 +461,7 @@ def parcoord(data, color_col=None, rescale='min-max'):
     ----------
     data : DataFrame
         pandas DataFrame with input data.
-    color_col: str
+    color: str
         Which column in **data** to use for the color encoding.
     rescale : str or fun
         How to rescale the values before plotting them.
@@ -477,13 +478,13 @@ def parcoord(data, color_col=None, rescale='min-max'):
     data = data.copy()
     # Setting a non-existing column with specified type passes through without effect
     # and eliminates the need to hvae a separate plotting section for colored bars below.
-    if color_col is None:
-        color_col = ':Q'
+    if color is None:
+        color = ':Q'
     # rescale = None # give example of lamba fun and reccoment skleanr
     num_cols = data.select_dtypes('number').columns.to_list()
 
     if rescale == 'mean-sd':
-        data[num_cols] = data[num_cols].apply(lambda x: (x - x.mean()) / x.std()) 
+        data[num_cols] = data[num_cols].apply(lambda x: (x - x.mean()) / x.std())
     elif rescale == 'min-max':
         data[num_cols] = data[num_cols].apply(lambda x: (x - x.min()) / (x.max() - x.min()))
     elif callable(rescale):
@@ -491,16 +492,16 @@ def parcoord(data, color_col=None, rescale='min-max'):
     elif rescale is not None:
         print('not supported')
 
-    legend_click = alt.selection_multi(fields=[color_col], bind='legend')
+    legend_click = alt.selection_multi(fields=[color], bind='legend')
 
-    return alt.Chart(data[num_cols + [color_col]]).transform_window(
+    return alt.Chart(data[num_cols + [color]]).transform_window(
         index='count()'
     ).transform_fold(
         num_cols
     ).mark_line().encode(
         alt.X('key:O', title=None, scale=alt.Scale(nice=False, padding=0.05)),
         alt.Y('value:Q', title=None),
-        alt.Color(color_col, title=None),
+        alt.Color(color, title=None),
         detail='index:N',
         opacity=alt.condition(legend_click, alt.value(0.6), alt.value(0.05))
     ).properties(width=len(num_cols) * 100).add_selection(legend_click)
