@@ -61,7 +61,7 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
             alt.Size('abs_value:Q', scale=alt.Scale(domain=[0, 1]), legend=None),
             alt.Tooltip('value', format='.2f'),
             opacity = alt.condition(hover, alt.value(0.9), alt.value(0.2))).add_selection(hover))#.properties(width=300, height=300)
-            
+
     return alt.concat(*subplot_row).resolve_axis(y='shared').configure_view(strokeWidth=0)
 
 
@@ -112,7 +112,7 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
     selected_data = data.select_dtypes(dtype)
     if columns == None:
         if selected_data.columns.size <= 3:
-            columns = select_data.columns.size
+            columns = selected_data.columns.size
         else:
             # Ceil sqrt
             columns = int(-(-selected_data.columns.size ** (1/2) // 1))
@@ -146,44 +146,46 @@ def dist(data, color_col=None, mark=None, dtype='number', columns=None, rug=True
                 charts.append(
                     alt.vconcat(
                         alt.Chart(data.sample(data.shape[0]), width=120).mark_bar().encode(
-                        x=alt.X('count()'),
-                        y=alt.Y(color_col, title=None, axis=alt.Axis(domain=True, title='', labels=False, ticks=False)),
-                        color=alt.Color(color_col, title=None),
-                        row=alt.Row(col, title=None,
-                                    header=alt.Header(labelAngle=0, labelAlign='left', labelPadding=5))),
-                    title=alt.TitleParams(col, anchor='middle')))
+                            x=alt.X('count()'),
+                            y=alt.Y(color_col, title=None, axis=alt.Axis(domain=True, title='', labels=False, ticks=False)),
+                            color=alt.Color(color_col, title=None),
+                            row=alt.Row(col, title=None,
+                                        header=alt.Header(labelAngle=0, labelAlign='left', labelPadding=5))),
+                        title=alt.TitleParams(col, anchor='middle')))
 
-            return (alt.concat(*charts, columns=columns)
-            .configure_facet(spacing=0)
-            .configure_view(stroke=None)
-            .configure_scale(bandPaddingInner=0.06, bandPaddingOuter=0.4))
+            return (
+                alt.concat(*charts, columns=columns)
+                .configure_facet(spacing=0)
+                .configure_view(stroke=None)
+                .configure_scale(bandPaddingInner=0.06, bandPaddingOuter=0.4))
 
     else:  # TODO don't support dates...
         # Histograms
         # TODO add count label on y-axis or write in docstring what it is use configure to add it
         if mark == 'bar':
-            return (alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).encode(
-                alt.X(alt.repeat(), type='quantitative', bin=bins),
-                alt.Y('count()', title='', stack=None),
-                alt.Color(color_col))
-            .properties(width=185, height=120)
-            .repeat(selected_data.columns.tolist()[::-1], columns=columns))
+            return (
+                alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).encode(
+                    alt.X(alt.repeat(), type='quantitative', bin=bins),
+                    alt.Y('count()', title='', stack=None),
+                    alt.Color(color_col))
+                .properties(width=185, height=120)
+                .repeat(selected_data.columns.tolist()[::-1], columns=columns))
 
         # Density plots
         # TODO add density label on y-axis
-        elif mark in ['area', 'line']: 
+        elif mark in ['area', 'line']:
             subplot_row = []
             for col in selected_data.columns.tolist()[::-1]:
                 subplot = (
                     alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).transform_density(
-                    col, [col, 'density'], groupby=[color_col], minsteps=100)
+                        col, [col, 'density'], groupby=[color_col], minsteps=100)
                     .encode(
-                    alt.X(col, axis=alt.Axis(grid=False)),
-                    alt.Y('density:Q', title=None),
-                    alt.Color(color_col, title=None))
+                        alt.X(col, axis=alt.Axis(grid=False)),
+                        alt.Y('density:Q', title=None),
+                        alt.Color(color_col, title=None))
         #              alt.Y('density:Q', title=None, axis=alt.Axis(labels=False, ticks=False, grid=False)))
         #              alt.Y('density:Q', title=None, axis=None)) #alt.Axis(labels=False, ticks=False, )))
-                .properties(width=185, height=120))
+                    .properties(width=185, height=120))
                 if rug:
                     rugplot = alt.Chart(data).mark_tick(color='black', opacity=0.3, yOffset=60 - 3, height=7).encode(
                         alt.X(col))
