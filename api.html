@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API Reference &#8212; Altair Ally</title>
     
-  <link rel="stylesheet" href="_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+  <link href="_static/css/theme.css" rel="stylesheet" />
+  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
   <link rel="stylesheet"
@@ -19,14 +20,10 @@
 
     
       
-  <link rel="stylesheet"
-    href="_static/vendor/open-sans_all/1.44.1/index.css">
-  <link rel="stylesheet"
-    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
 
     
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/sphinx-book-theme.40e2e510f6b7d1648584402491bb10fe.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
@@ -35,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.d3f166471bb80abb5163.js">
+  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
 
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -45,7 +42,7 @@
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="_static/sphinx-book-theme.d31b09fe5c1d09cb49b26a786de4a05d.js"></script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -56,14 +53,14 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Examples" href="examples.html" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
-
-
-
+    
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
     
 
     <div class="container-xl">
@@ -72,25 +69,25 @@
 <div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
     
         <div class="navbar-brand-box">
-<a class="navbar-brand text-wrap" href="index.html">
-  
-  
-  <h1 class="site-logo" id="site-title">Altair Ally</h1>
-  
-</a>
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      <h1 class="site-logo" id="site-title">Altair Ally</h1>
+      
+    </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form>
-<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <ul class="nav sidenav_l1">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="intro.html">
    Altair Ally
   </a>
  </li>
 </ul>
-<ul class="current nav sidenav_l1">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="examples.html">
    Examples
@@ -103,6 +100,7 @@
  </li>
 </ul>
 
+    </div>
 </nav> <!-- To handle the deprecated key -->
 
 <div class="navbar_extra_footer">
@@ -118,21 +116,21 @@
           
 <main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
     
-    <div class="row topbar fixed-top container-xl">
-    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
-    </div>
-    <div class="col pl-2 topbar-main">
-        
-        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-            <i class="fas fa-bars"></i>
-            <i class="fas fa-arrow-left"></i>
-            <i class="fas fa-arrow-up"></i>
-        </button>
-        
-        
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
 <div class="dropdown-buttons-trigger">
     <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
             class="fas fa-download"></i></button>
@@ -150,7 +148,7 @@
     </div>
 </div>
 
-        <!-- Source interaction buttons -->
+            <!-- Source interaction buttons -->
 
 <div class="dropdown-buttons-trigger">
     <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
@@ -168,25 +166,25 @@
     </div>
 </div>
 
+            <!-- Full screen (wrap in <a> to have style consistency -->
 
-        <!-- Full screen (wrap in <a> to have style consistency -->
-        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-                title="Fullscreen mode"><i
-                    class="fas fa-expand"></i></button></a>
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
 
-        <!-- Launch buttons -->
+            <!-- Launch buttons -->
 
-    </div>
-
-    <!-- Table of contents -->
-    <div class="d-none d-md-block col-md-2 bd-toc show">
-        
-        <div class="tocsection onthispage pt-5 pb-3">
-            <i class="fas fa-list"></i> Contents
         </div>
-        <nav id="bd-toc-nav">
-            <ul class="nav section-nav flex-column">
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#corr">
    corr
@@ -219,8 +217,8 @@
  </li>
 </ul>
 
-        </nav>
-        
+            </nav>
+        </div>
     </div>
 </div>
     <div id="main-content" class="row">
@@ -260,7 +258,7 @@ e.g. ‘click’ or ‘mouseover’.</p></li>
 <h2>dist<a class="headerlink" href="#dist" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="altair_ally.eda_plots.dist">
-<code class="sig-name descname"><span class="pre">dist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'number'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.dist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">dist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'number'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.dist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the distribution of each dataframe column.</p>
 <p>Can visualize univariate distributions
 of either numerical or categorical variables
@@ -273,7 +271,7 @@ a rug plot is included by default to indicate the number of observations in the 
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
-<li><p><strong>color_col</strong> (<em>str</em>) – Column in <strong>data</strong> used for the color encoding.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – Column in <strong>data</strong> used for the color encoding.</p></li>
 <li><p><strong>mark</strong> (<em>str</em>) – Wether to plot a density plot (‘area’),
 or a histogram / barplot of counts (‘bar’).
 The default is to use an area for numerical variables,
@@ -297,13 +295,18 @@ The default is to create an as square grid as possible.</p></li>
 <h2>heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="altair_ally.eda_plots.heatmap">
-<code class="sig-name descname"><span class="pre">heatmap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min-max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cat_schemes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['tableau10',</span> <span class="pre">'set2',</span> <span class="pre">'accent']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yellowgreenblue'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.heatmap" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">heatmap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min-max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cat_schemes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['tableau10',</span> <span class="pre">'set2',</span> <span class="pre">'accent']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yellowgreenblue'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.heatmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the values of all columns and observations as a heatmap.</p>
+<p>This reshapes the dataframe to a longer format,
+so you might need to disable the max rows warning in Altair
+or use the ‘data-server’ backend:
+<cite>aly.alt.data_transformers.disable_max_rows()</cite> or
+<cite>aly.alt.data_transformers(‘data_server’)</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
-<li><p><strong>color_col</strong> (<em>str</em>) – Which column(s) in <strong>data</strong> to use for the color encoding.
+<li><p><strong>color</strong> (<em>str</em>) – Which column(s) in <strong>data</strong> to use for the color encoding.
 Helpful to investigate if a categorical column is correlated
 with the value arrangement in the numerical columns.</p></li>
 <li><p><strong>sort</strong> (<em>str</em><em> or </em><em>list of str</em>) – Which column(s) in <strong>data</strong> to use for sorting the observations.
@@ -315,7 +318,7 @@ One of ‘min-max’, ‘mean-sd’, None, or a custom function.
 ‘mean-sd’ rescales the data to have mean 0 and sd 1.
 None uses the raw values.</p></li>
 <li><p><strong>cat_schemes</strong> (<em>list of str</em>) – Color schemes to use for each of the categorical heatmaps.
-Cycles through when shorter than <strong>color_col</strong>,
+Cycles through when shorter than <strong>color</strong>,
 so set to a list with a single item
 if you want to use the same color scheme for all categorical heatmaps.</p></li>
 <li><p><strong>num_scheme</strong> (<em>str</em>) – Color scheme to use for the numerical heatmap.</p></li>
@@ -352,7 +355,7 @@ will update the counts in the barplot.</p>
 <h2>pair<a class="headerlink" href="#pair" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="altair_ally.eda_plots.pair">
-<code class="sig-name descname"><span class="pre">pair</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tooltip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'point'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.pair" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pair</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tooltip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'point'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create pairwise scatter plots of all column combinations.</p>
 <p>In contrast to many other pairplot tools,
 this function creates a single scatter plot per column pair,
@@ -361,7 +364,7 @@ and no distribution plots along the diagonal.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
-<li><p><strong>color_col</strong> (<em>str</em>) – Column in <strong>data</strong> used for the color encoding.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – Column in <strong>data</strong> used for the color encoding.</p></li>
 <li><p><strong>tooltip</strong> (<em>str</em>) – Column in <strong>data</strong> used for the tooltip encoding.</p></li>
 <li><p><strong>mark</strong> (<em>str</em>) – Shape of the points. Passed to Chart.
 One of “circle”, “square”, “tick”, or “point”.</p></li>
@@ -380,13 +383,13 @@ One of “circle”, “square”, “tick”, or “point”.</p></li>
 <h2>parcoord<a class="headerlink" href="#parcoord" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="altair_ally.eda_plots.parcoord">
-<code class="sig-name descname"><span class="pre">parcoord</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min-max'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#parcoord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.parcoord" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parcoord</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min-max'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/altair_ally/eda_plots.html#parcoord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#altair_ally.eda_plots.parcoord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the values of all columns and observations as a parallel coordinates plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>DataFrame</em>) – pandas DataFrame with input data.</p></li>
-<li><p><strong>color_col</strong> (<em>str</em>) – Which column in <strong>data</strong> to use for the color encoding.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – Which column in <strong>data</strong> to use for the color encoding.</p></li>
 <li><p><strong>rescale</strong> (<em>str</em><em> or </em><em>fun</em>) – How to rescale the values before plotting them.
 Ensures that one column does not dominate the plot.
 One of ‘min-max’, ‘mean-sd’, or a custom function.
@@ -425,14 +428,14 @@ One of ‘min-max’, ‘mean-sd’, or a custom function.
 
               </div>
               
-        </div>
-    </div>
-    
-    
-    <div class='prev-next-bottom'>
         
+        <div class='prev-next-bottom'>
+            
     <a class='left-prev' id="prev-link" href="examples.html" title="previous page">Examples</a>
 
+        </div>
+        
+        </div>
     </div>
     <footer class="footer mt-5 mt-md-0">
     <div class="container">
@@ -449,11 +452,9 @@ One of ‘min-max’, ‘mean-sd’, or a custom function.
 
       </div>
     </div>
+  
+  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
-    
-  <script src="_static/js/index.d3f166471bb80abb5163.js"></script>
-
-
-    
+  
   </body>
 </html>
