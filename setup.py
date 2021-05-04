@@ -1,17 +1,19 @@
-from os import path
 from setuptools import setup, find_packages
 
 
 setup(
     name='altair_ally',
-    url='https://gitlab.com/joelostblom/sinfo',
+    url='https://joelostblom.github.io/altair_ally',
     author='Joel Ostblom',
     author_email='joel.ostblom@protonmail.com',
     packages=find_packages(),
-    install_requires=['altair', 'vega_datasets'],
+    install_requires=['altair', 'vega_datasets', 'pandas'],
     python_requires='>=3.6',
     license='BSD-3',
+    version='0.1.0',
     description='''
-        sinfo outputs version information for modules loaded in the current
-        session, Python, and the OS.''',
+        Altair Ally is an companion package to Altair, which provides a few shortcuts to create common plots for exploratory data analysis, particularly those involving visualization of an entire dataset.''',
+    # Include readme in markdown format, GFM markdown style by default
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown'
 )
