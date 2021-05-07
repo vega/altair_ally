@@ -1,4 +1,4 @@
-# Altair Ally
+# Introduction
 
 *This package is in early development and its API might change.*
 
