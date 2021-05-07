@@ -3,7 +3,7 @@
 
 title: Altair Ally
 author: Joel Ostblom
-# logo: logo.png
+logo: _static/aly-logo.svg
 
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
