@@ -2,7 +2,7 @@
 
 *This package is in early development and its API might change.*
 
-Altair Ally is an companion package to Altair,
+Altair Ally is a companion package to Altair,
 which provides a few shortcuts to create common plots
 for exploratory data analysis (EDA),
 particularly those involving visualizing an entire dataset.

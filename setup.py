@@ -12,7 +12,7 @@ setup(
     license='BSD-3',
     version='0.1.0',
     description='''
-        Altair Ally is an companion package to Altair, which provides a few shortcuts to create common plots for exploratory data analysis, particularly those involving visualization of an entire dataset.''',
+        Altair Ally is a companion package to Altair, which provides shortcuts to create common plots for exploratory data analysis, particularly those involving visualization of an entire dataset.''',
     # Include readme in markdown format, GFM markdown style by default
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown'
