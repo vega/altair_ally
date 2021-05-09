@@ -22,8 +22,12 @@ The package name is a nod to ggally
 which complements ggplot2 in a similar,
 but much more extensive manner.
 
-Install via
+## Installation
 
 ```
 pip install altair-ally
 ```
+
+## Usage
+
+See [the examples section](examples.ipynb).
