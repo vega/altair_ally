@@ -2,6 +2,7 @@ from itertools import combinations, cycle
 
 import altair as alt
 import numpy as np
+import pandas as pd
 
 
 # TODO show examples of how to set chart width etc, might need to add a param
@@ -214,22 +215,23 @@ def get_label_angle(
 
 
 # TODO It would be neat if any transform could be specified via .transform_* methods and then applied to all charts in the loop? That would just be a lot of things to keep track of, wouldn't it? But maybe they would all just work and aly is more about setting good default for multi charts in altair. Maybe this is more annoying for something like bin thought?
+from typing import Union
 def dist(
-    data,
-    color=None, # Shortcut for color encoding
-    dtype='numerical', # preface with ! for exluding  # TODO only allow cat and num?
-    columns=None,
+    data: pd.DataFrame,
+    color: str = None, # Shortcut for color encoding
+    dtype: str = 'numerical', # preface with ! for exluding  # TODO only allow cat and num?
+    columns: int = None,
     # Transform
-    density=None,
-    bin=False,
-    cumulative=False,
+    density: bool = None,
+    bin: Union[bool, alt.Bin] = False,
+    cumulative: bool = False,
     # Encodings
-    encoding=None,
+    encoding: Union[dict, alt.Encoding] = None,
     # TODO Should there also be a shortcut for `stack`?
     # Mark
-    mark=None,
-    rug=True, # Shortcut, only active when rug = Flase?
-):
+    mark: Union[str, alt.MarkDef] = None,
+    rug: bool = True, # Shortcut, only active when rug = Flase?
+) -> alt.ConcatChart:
     if encoding is None:
         encoding = {}
     elif isinstance(encoding, alt.Encoding):
@@ -304,7 +306,6 @@ def dist(
             # TODO alt.Encoding requires specification of types, is there a way around that?
             default_encoding = dict(
                 y=alt.Y('count()').title('Count'),
-                # TODO how to modify the  X encoding if "col" is not availble?
                 x=alt.X(col + ':N').sort('-y').axis(
                     labelAngle=get_label_angle(
                         selected_data[col].unique(),
