@@ -381,13 +381,6 @@ def dist(
                 )
             )
 
-        # return charts
-        return (
-            alt.concat(*charts, columns=columns)
-            .configure_view(stroke=None)
-            .configure_scale(bandPaddingInner=0.2, bandPaddingOuter=0.4)
-        )
-
     # Histograms
     elif dtype == 'numerical':  # TODO don't support dates...
         if bin:
@@ -436,7 +429,6 @@ def dist(
                         width=200,
                     )
                 )
-            return alt.concat(*charts, columns=columns).configure_view(stroke=None)
 
         # Density plots
         elif density:
@@ -483,7 +475,6 @@ def dist(
                         height=200 if cumulative else 120
                     )
                 )
-                # TODO return charts and move rug to the end
                 if rug:
                     rugplot = alt.Chart(data).mark_tick(
                         opacity=0.4,
@@ -497,7 +488,6 @@ def dist(
                     chart = chart + rugplot
 
                 charts.append(chart)
-            return alt.concat(*charts, columns=columns).configure_view(stroke=None)
 
         # If only cumulative is specified, draw an ecdf
         elif cumulative:
@@ -542,7 +532,6 @@ def dist(
                         width=180,
                     )
                 )
-            return alt.concat(*charts, columns=columns).configure_view(stroke=None)
 
         else:
             default_mark = dict(
@@ -581,10 +570,8 @@ def dist(
                         width=180,
                     )
                 )
-            return alt.concat(*charts, columns=columns).configure_view(stroke=None)
 
-
-    return selected_data
+    return alt.concat(*charts, columns=columns).configure_view(stroke=None)
 
 
 def heatmap(data, color=None, sort=None, rescale='min-max',
