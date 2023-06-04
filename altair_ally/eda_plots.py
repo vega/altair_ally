@@ -220,40 +220,31 @@ def dist(
     data: pd.DataFrame,
     color: str = None, # Shortcut for color encoding
     dtype: str = 'numerical', # preface with ! for exluding  # TODO only allow cat and num?
-    columns: int = None,
     # Transform
     density: bool = None,
     bin: Union[bool, alt.Bin] = False,
     cumulative: bool = False,
+    # Mark
+    mark: Union[str, alt.MarkDef] = None,
     # Encodings
     encoding: Union[dict, alt.Encoding] = None,
     # TODO Should there also be a shortcut for `stack`?
-    # Mark
-    mark: Union[str, alt.MarkDef] = None,
-    rug: bool = True, # Shortcut, only active when rug = Flase?
+    columns: int = None,
 ) -> alt.ConcatChart:
-    if encoding is None:
-        encoding = {}
-    elif isinstance(encoding, alt.Encoding):
-        encoding = encoding.to_dict()
-    assert not (density and bin)
-    if density is None and not bin and dtype == 'numerical':
-        density = True
 
-    if isinstance(mark, str):
-        mark = alt.MarkDef(mark).to_dict()
-    elif isinstance(mark, alt.MarkDef):
-        mark = mark.to_dict()
-
+    # TODO is ValueError the correct one to raise here?
     if dtype == 'numerical':
         selected_data = data.select_dtypes(include='number').copy()
     elif dtype == 'categorical':
         selected_data = data.select_dtypes(exclude='number').copy()
-        assert not bin, 'You cannot bin a categorical variable'
-        assert not density, 'You cannot compute a density estimate for a categorical variable'
+        if bin:
+            raise ValueError('Cannot bin categorical variables.')
+        if density:
+            raise ValueError('Cannot compute a density estimate for categorical variables.')
     else:
-        raise ValueError('Unsupported dtype')
+        raise ValueError("`dtype` needs to be either `'categorical'` or `'numerical'`'.")
 
+    # TODO this could possible be refined when there are many categorical columns to create a certical column instead?
     if columns is None:
         if selected_data.columns.size <= 3:
             columns = selected_data.columns.size
@@ -261,38 +252,52 @@ def dist(
             # Ceil sqrt to make grid square
             columns = int(-(-selected_data.columns.size ** (1/2) // 1))
 
+    if color is None:
+        xOffset = alt.XOffset()
+        color = alt.Color()
+    else:
+        # This should happen after the columns grid computation above
+        if dtype == 'numerical':
+            selected_data[color] = data[color]
+        if isinstance(color, str):
+            color = alt.utils.parse_shorthand(color)
+        elif isinstance(color, alt.Color):
+            # validate=False is to allow passing options without a color string, is that needed even?
+            # TODO Should work but doesn't https://github.com/altair-viz/altair/issues/3075
+            color = color.to_dict(validate=False)
+        else:
+            raise ValueError('`color` needs to be a string or a `alt.Color` instance.')
+        # Make colors categorical unless otherwise specified
+        if 'type' not in color:
+            color['type'] = 'nominal'
+        # TODO what if someone wants another order?
+        # They could still override this via the encoding but it is maybe tedious?
+        color_order = selected_data.value_counts(color['field']).index.tolist()
+        xOffset = alt.XOffset(**color).scale(paddingInner=0.1).sort(color_order)
+        color = alt.Color(**color).title('').sort(color_order)
+
+    if density and bin:
+        raise ValueError('Cannot compute a density estimate for binned variables.')
+    if density:
+        rug = False
+    if density is None and not bin and dtype == 'numerical':
+        density = True
+        rug = True
+
+    if encoding is None:
+        encoding = {}
+    elif isinstance(encoding, alt.Encoding):
+        encoding = encoding.to_dict()
+
     if mark is None:
         mark = {}
     else:
         if isinstance(mark, str):
             mark = alt.MarkDef(mark).to_dict()
         elif isinstance(color, alt.MarkDef):
-            pass
-        # else:
-        #     raise ValueError('Unsupported mark type')
-
-    if color is None:
-        xOffset = alt.XOffset()
-        color = alt.Color()
-    else:
-        # This should not be part of the columns situation above
-        if dtype == 'numerical':
-            selected_data[color] = data[color]
-        opacity=0.5  # For histograms
-        # Default to nominal but allow explicit change
-        if isinstance(color, str):
-            color = alt.utils.parse_shorthand(color)
-        elif isinstance(color, alt.Color):
-            # TODO Should work but doesn't https://github.com/altair-viz/altair/issues/3075
-            color = color.to_dict(validate=False)
+            mark = mark.to_dict()
         else:
-            raise ValueError('Unsupported color type')
-        if 'type' not in color:
-            color['type'] = 'nominal'
-        # Todo what if someone wants another order? They could still override this via the encoding
-        color_order = selected_data.value_counts(color['field']).index.tolist()
-        xOffset = alt.XOffset(**color).scale(paddingInner=0.1).sort(color_order)
-        color = alt.Color(**color).title('').sort(color_order)
+            raise ValueError('`mark` needs to be a string or `alt.MarkDef` instance.')
 
     # Counts of categorical distributions
     if dtype == 'categorical':
