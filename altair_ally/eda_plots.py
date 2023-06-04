@@ -58,7 +58,7 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
                alt.Color('value', title='', scale=alt.Scale(domain=[-1, 1], scheme='blueorange')),
                alt.Size('abs_value:Q', scale=alt.Scale(domain=[0, 1]), legend=None),
                alt.Tooltip('value', format='.2f'),
-               opacity=alt.condition(hover, alt.value(0.9), alt.value(0.2))).add_selection(hover))
+               opacity=alt.condition(hover, alt.value(0.9), alt.value(0.2))).add_params(hover))
 
     return alt.concat(*subplot_row).resolve_axis(y='shared').configure_view(strokeWidth=0)
 
@@ -699,7 +699,7 @@ def nan(data):
             alt.Color('value', scale=color_scale, sort=[False, True],
                       legend=alt.Legend(orient='top', offset=-13), title=None),
             alt.Stroke('value', scale=color_scale, sort=[False, True], legend=None))
-        .properties(width=heatmap_width).add_selection(zoom))
+        .properties(width=heatmap_width).add_params(zoom))
 
     # Bind bar chart update to zoom in individual chart and add hover to individual chart,
     # configurable column for tooltip, or index
@@ -801,7 +801,7 @@ def pair(data, color=None, tooltip=None, mark='point', width=150, height=150):
 
     return (
         alt.vconcat(*subplot_row)
-        .add_selection(brush, legend_click))
+        .add_params(brush, legend_click))
 
 
 def parcoord(data, color=None, rescale='min-max'):
@@ -855,4 +855,5 @@ def parcoord(data, color=None, rescale='min-max'):
         alt.Color(color, title=None),
         detail='index:N',
         opacity=alt.condition(legend_click, alt.value(0.6), alt.value(0.05))
-    ).properties(width=len(num_cols) * 100).add_selection(legend_click)
+    ).properties(width=len(num_cols) * 100).add_params(legend_click)
+
