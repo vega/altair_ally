@@ -61,131 +61,481 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
 
     return alt.concat(*subplot_row).resolve_axis(y='shared').configure_view(strokeWidth=0)
 
+def get_label_angle(
+    labels,
+    offset_groups,
+    step_size=20,
+    padding_between_offset=None,
+    padding_between_x=None,
+):
+    # Defaults from https://vega.github.io/vega-lite/docs/scale.html#band
+    if padding_between_offset is None:
+        if offset_groups > 1:
+            padding_between_offset = 0.1
+        else:
+            padding_between_offset = 0
+    if padding_between_x is None:
+        # padding_between_x = 0.2
+        if offset_groups > 1:
+            # Supposed to be 0.2 in the docs, but due to this bug https://github.com/vega/vega-lite/issues/8930 I am multiplying by the number of offset groups
+            padding_between_x = 0.3 * offset_groups
+        else:
+            padding_between_x = 0.1
 
-def dist(data, color=None, mark=None, dtype='number', columns=None, rug=True):
-    """
-    Plot the distribution of each dataframe column.
+    # This dictionary was constructed based on a common font via the following snippet:
+    # from string import ascii_letters
+    # from PIL import ImageFont
+    # font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')
+    # letter_widths = {letter: font.getsize(letter * 10)[0] / 10 for letter in ascii_letters}
+    letter_widths = {
+        'a': 6.1,
+        'b': 6.3,
+        'c': 5.5,
+        'd': 6.3,
+        'e': 6.2,
+        'f': 3.6,
+        'g': 6.3,
+        'h': 6.3,
+        'i': 2.8,
+        'j': 2.9,
+        'k': 5.8,
+        'l': 2.8,
+        'm': 9.7,
+        'n': 6.3,
+        'o': 6.1,
+        'p': 6.3,
+        'q': 6.3,
+        'r': 4.0,
+        's': 5.2,
+        't': 3.9,
+        'u': 6.3,
+        'v': 5.9,
+        'w': 8.2,
+        'x': 5.9,
+        'y': 5.9,
+        'z': 5.3,
+        'A': 7.1,
+        'B': 6.9,
+        'C': 7.0,
+        'D': 7.7,
+        'E': 6.3,
+        'F': 5.8,
+        'G': 7.8,
+        'H': 7.5,
+        'I': 3.0,
+        'J': 3.1,
+        'K': 6.6,
+        'L': 5.6,
+        'M': 8.6,
+        'N': 7.5,
+        'O': 7.9,
+        'P': 6.0,
+        'Q': 7.9,
+        'R': 7.0,
+        'S': 6.3,
+        'T': 6.1,
+        'U': 7.3,
+        'V': 6.9,
+        'W': 9.9,
+        'X': 6.9,
+        'Y': 6.3,
+        'Z': 6.9,
+        '!': 4.0,
+        '"': 4.6,
+        '#': 8.4,
+        '$': 6.4,
+        '%': 9.5,
+        '&': 7.8,
+        "'": 2.8,
+        '(': 3.9,
+        ')': 3.9,
+        '*': 5.0,
+        '+': 8.4,
+        ',': 3.2,
+        '-': 3.6,
+        '.': 3.2,
+        '/': 3.4,
+        ':': 3.4,
+        ';': 3.4,
+        '<': 8.4,
+        '=': 8.4,
+        '>': 8.4,
+        '?': 5.3,
+        '@': 10.0,
+        '[': 3.9,
+        '\\': 3.4,
+        ']': 3.9,
+        '^': 8.4,
+        '_': 5.2,
+        '`': 5.0,
+        '{': 6.4,
+        '|': 3.4,
+        '}': 6.4,
+        '~': 8.4,
+        '0': 6.4,
+        '1': 6.4,
+        '2': 6.4,
+        '3': 6.4,
+        '4': 6.4,
+        '5': 6.4,
+        '6': 6.4,
+        '7': 6.4,
+        '8': 6.4,
+        '9': 6.4,
+        ' ': 3.2
+    }
+    mean_width = sum(letter_widths.values()) / len(letter_widths.values())
+    label_widths = []
+    for label in labels:
+        label_widths.append(
+            sum([
+                letter_widths[letter]
+                if letter in letter_widths
+                # Default to mean width for unknowns
+                else mean_width
+                for letter in str(label)
+            ])
+        )
+    # Rotate labels if they collide
+    # print(max(label_widths))
+    # print(offset_groups * step_size)
+    # print(padding_between_offset * step_size * (offset_groups - 1))
+    # print(padding_between_x * step_size)
+    # print()
+    # Compare the longest label width with the available space for each label
+    if max(label_widths) > (
+            offset_groups * step_size
+            + padding_between_offset * step_size * (offset_groups - 1)
+            + padding_between_x * step_size
+    ):
+        return -45
+    else:
+        return 0
 
-    Can visualize univariate distributions
-    of either numerical or categorical variables
-    depending on which **dtype** is used.
-    Numercial distributions can be plotted as either density plots or histograms,
-    depending on which **mark** is used.
-    Since density plots can be misleadingly smooth with small datasets,
-    a rug plot is included by default to indicate the number of observations in the data.
 
-    Parameters
-    ----------
-    data : DataFrame
-        pandas DataFrame with input data.
-    color : str
-        Column in **data** used for the color encoding.
-    mark : str
-        Wether to plot a density plot ('area'),
-        or a histogram / barplot of counts ('bar').
-        The default is to use an area for numerical variables,
-        and a barplot for categorical variables.
-    dtype : str or type
-        Which column types to plot, passed to DataFrame.select_dtypes.
-        If 'object', 'category', or 'bool',
-        a barplot of counts for each categorical value will be plotted.
-    columns : int
-        The number of columns in the plot grid.
-        The default is to create an as square grid as possible.
-    rug : bool
-        Wether to include a rug plot or not.
+# TODO It would be neat if any transform could be specified via .transform_* methods and then applied to all charts in the loop? That would just be a lot of things to keep track of, wouldn't it? But maybe they would all just work and aly is more about setting good default for multi charts in altair. Maybe this is more annoying for something like bin thought?
+def dist(
+    data,
+    color=None, # Shortcut for color encoding
+    dtype='numerical', # preface with ! for exluding  # TODO only allow cat and num?
+    columns=None,
+    # Transform
+    density=None,
+    bin=False,
+    cumulative=False,
+    # Encodings
+    encoding=None,
+    # TODO Should there also be a shortcut for `stack`?
+    # Mark
+    mark=None,
+    rug=True, # Shortcut, only active when rug = Flase?
+):
+    if encoding is None:
+        encoding = {}
+    elif isinstance(encoding, alt.Encoding):
+        encoding = encoding.to_dict()
+    assert not (density and bin)
+    if density is None and not bin and dtype == 'numerical':
+        density = True
 
-    Returns
-    -------
-    ConcatChart
-        Concatenated Chart of the distribution plots laid out in a square grid.
-    """
-    # TODO add clickable legend
-    bins = True
-    # bins = alt.Bin(maxbins=30)
-    # Layout out in a single row for up to 3 columns, after that switch to a squareish grid
-    selected_data = data.select_dtypes(dtype)
+    if isinstance(mark, str):
+        mark = alt.MarkDef(mark).to_dict()
+    elif isinstance(mark, alt.MarkDef):
+        mark = mark.to_dict()
+
+    if dtype == 'numerical':
+        selected_data = data.select_dtypes(include='number').copy()
+    elif dtype == 'categorical':
+        selected_data = data.select_dtypes(exclude='number').copy()
+        assert not bin, 'You cannot bin a categorical variable'
+        assert not density, 'You cannot compute a density estimate for a categorical variable'
+    else:
+        raise ValueError('Unsupported dtype')
+
     if columns is None:
         if selected_data.columns.size <= 3:
             columns = selected_data.columns.size
         else:
-            # Ceil sqrt
+            # Ceil sqrt to make grid square
             columns = int(-(-selected_data.columns.size ** (1/2) // 1))
 
     if mark is None:
-        if dtype == 'number':  # TODO support floats etc
-            mark = 'area'
-        elif dtype in ['category', 'object', 'bool']:
-            mark = 'bar'
+        mark = {}
+    else:
+        if isinstance(mark, str):
+            mark = alt.MarkDef(mark).to_dict()
+        elif isinstance(color, alt.MarkDef):
+            pass
+        # else:
+        #     raise ValueError('Unsupported mark type')
 
-    if mark not in ['area', 'line', 'bar', 'point']:
-        print('not supported')
-    # if mark == 'area':
-        # mark = alt.MarkDef(mark, opacity=0.7)
-
-    opacity = 0.7
-    # Setting a non-existing column with specified type passes through without effect
-    # and eliminates the need to hvae a separate plotting section for colored bars below.
     if color is None:
-        color = ':Q'
-        opacity = 0.9
-
-    if dtype in ['category', 'object', 'bool']:
-        # Counts of categorical distributions
-        # TODO add count label on y-axis or write in docstring what it is use configure to add it
-        if mark != 'bar':
-            print("Only bar mark supported")
+        xOffset = alt.XOffset()
+        color = alt.Color()
+    else:
+        # This should not be part of the columns situation above
+        if dtype == 'numerical':
+            selected_data[color] = data[color]
+        opacity=0.5  # For histograms
+        # Default to nominal but allow explicit change
+        if isinstance(color, str):
+            color = alt.utils.parse_shorthand(color)
+        elif isinstance(color, alt.Color):
+            # TODO Should work but doesn't https://github.com/altair-viz/altair/issues/3075
+            color = color.to_dict(validate=False)
         else:
+            raise ValueError('Unsupported color type')
+        if 'type' not in color:
+            color['type'] = 'nominal'
+        # Todo what if someone wants another order? They could still override this via the encoding
+        color_order = selected_data.value_counts(color['field']).index.tolist()
+        xOffset = alt.XOffset(**color).scale(paddingInner=0.1).sort(color_order)
+        color = alt.Color(**color).title('').sort(color_order)
+
+    # Counts of categorical distributions
+    if dtype == 'categorical':
+        if 'type' not in mark:
+            mark = dict(type='bar')
+        charts = []
+        # Sort based on the number of unique values to put smaller charts on top
+        # so that they don't get lost
+        chart_order = selected_data.nunique().sort_values().index
+        for col in chart_order:
+            # TODO alt.Encoding requires specification of types, is there a way around that?
+            default_encoding = dict(
+                y=alt.Y('count()').title('Count'),
+                # TODO how to modify the  X encoding if "col" is not availble?
+                x=alt.X(col + ':N').sort('-y').axis(
+                    labelAngle=get_label_angle(
+                        selected_data[col].unique(),
+                        selected_data[xOffset['field']].nunique(dropna=False)
+                        if 'field' in xOffset.to_dict() else 1
+                    )
+                ),
+                xOffset=xOffset,
+                color=color
+            )
+            chart_encoding = encoding | {
+                key: default_encoding[key]
+                for key in default_encoding
+                if key not in encoding
+            }
+            # If x channel options are set manually, but no field is given
+            if 'x' in encoding and 'field' not in encoding['x']:
+                chart_encoding['x']['field'] = col
+            charts.append(
+                alt.Chart(
+                    selected_data,
+                    height=120,
+                    mark=mark,
+                    encoding=chart_encoding,
+                )
+            )
+
+        # return charts
+        return (
+            alt.concat(*charts, columns=columns)
+            .configure_view(stroke=None)
+            .configure_scale(bandPaddingInner=0.2, bandPaddingOuter=0.4)
+        )
+
+    # Histograms
+    elif dtype == 'numerical':  # TODO don't support dates...
+        if bin:
+            if bin == True:
+                bin = alt.Bin(maxbins=20)
+            elif isinstance(bin, int):
+                bin= alt.Bin(maxbins=bin)
+
+            default_mark = dict(
+                type = 'bar',
+            )
+            if color != alt.Color():
+                default_mark['opacity'] = 0.7
+            # Need to sort due to the VL bug of bars being in different z-order
+            if 'field' in color.to_dict():
+                selected_data=selected_data.sort_values(color['field'])
+
+            mark.update({
+                key: default_mark[key]
+                for key in default_mark
+                if key not in mark
+            })
+
             charts = []
-            for col in selected_data.columns:
+            for col in selected_data.select_dtypes('number'):
+                default_encoding = dict(
+                    x=alt.X(col).bin(bin, cumulative=cumulative).title(col),
+                    y=alt.Y('count()').stack(False).title('Count'),
+                    color=color
+                )
+                chart_encoding = encoding | {
+                    key: default_encoding[key]
+                    for key in default_encoding
+                    if key not in encoding
+                }
+                # If x channel options are set manually, but no field is given
+                if 'x' in encoding and 'field' not in encoding['x']:
+                    chart_encoding['x']['field'] = col
                 charts.append(
-                    alt.vconcat(
-                        alt.Chart(data.sample(data.shape[0]), width=120).mark_bar().encode(
-                            x=alt.X('count()'),
-                            y=alt.Y(color, title=None, axis=alt.Axis(domain=True, title='', labels=False, ticks=False)),
-                            color=alt.Color(color, title=None),
-                            row=alt.Row(col, title=None,
-                                        header=alt.Header(labelAngle=0, labelAlign='left', labelPadding=5))),
-                        title=alt.TitleParams(col, anchor='middle')))
-
-            return (
-                alt.concat(*charts, columns=columns)
-                .configure_facet(spacing=0)
-                .configure_view(stroke=None)
-                .configure_scale(bandPaddingInner=0.06, bandPaddingOuter=0.4))
-
-    else:  # TODO don't support dates...
-        # Histograms
-        # TODO add count label on y-axis or write in docstring what it is use configure to add it
-        if mark == 'bar':
-            return (
-                alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).encode(
-                    alt.X(alt.repeat(), type='quantitative', bin=bins),
-                    alt.Y('count()', title='', stack=None),
-                    alt.Color(color))
-                .properties(width=185, height=120)
-                .repeat(selected_data.columns.tolist()[::-1], columns=columns))
+                    alt.Chart(
+                        selected_data,
+                        mark=mark,
+                        encoding=chart_encoding
+                    ).properties(
+                        height=120,
+                        width=200,
+                    )
+                )
+            return alt.concat(*charts, columns=columns).configure_view(stroke=None)
 
         # Density plots
-        # TODO add density label on y-axis? Meaningless...
-        elif mark in ['area', 'line']:
-            subplot_row = []
-            for col in selected_data.columns.tolist()[::-1]:
-                subplot = (
-                    alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).transform_density(
-                        col, [col, 'density'], groupby=[color], minsteps=100)
-                    .encode(
-                        alt.X(col, axis=alt.Axis(grid=False)),
-                        alt.Y('density:Q', title=None),
-                        alt.Color(color, title=None))
-                    .properties(width=185, height=120))
-                if rug:
-                    rugplot = alt.Chart(data).mark_tick(color='black', opacity=0.3, yOffset=60 - 3, height=7).encode(
-                        alt.X(col))
-                    subplot = subplot + rugplot
+        elif density:
+            charts = []
+            for col in selected_data.select_dtypes('number'):
+                default_encoding = dict(
+                    x=alt.X('value:Q').title(col).axis(grid=False),
+                    y=alt.Y('density:Q').title('Density'),
+                    stroke=color.legend(None),
+                    color=color,
+                )
+                chart_encoding = encoding | {
+                    key: default_encoding[key]
+                    for key in default_encoding
+                    if key not in encoding
+                }
 
-                subplot_row.append(subplot)
-            return alt.concat(*subplot_row, columns=columns)
+                density_transform = alt.DensityTransform(
+                    density=col,
+                    groupby=[] if color == alt.Color() else [color['field']],
+                    minsteps=100,
+                    cumulative=cumulative,
+                )
+                # The default mark props don't really make sense for other mark types
+                # so they are not propagated if a custom mark option is set
+                # TODO will it be confusing that this is different than other marks? Should it work like this everywhere?
+                if 'type' not in mark:
+                    mark = dict(
+                        type='line' if cumulative else 'area',
+                        fill=None,
+                        strokeWidth=2,
+                        opacity=0.9,
+                        stroke='#4c78a8',
+                    )
+                chart = (
+                    alt.Chart(
+                        data,
+                        mark=mark,
+                        encoding=chart_encoding,
+                    ).transform_density(
+                        **density_transform.to_dict()
+                    ).properties(
+                        width=200,
+                        height=200 if cumulative else 120
+                    )
+                )
+                # TODO return charts and move rug to the end
+                if rug:
+                    rugplot = alt.Chart(data).mark_tick(
+                        opacity=0.4,
+                        yOffset=-4,
+                        height=7
+                    ).encode(
+                        alt.X(col),
+                        y=alt.datum(0),
+                        color=color
+                    )
+                    chart = chart + rugplot
+
+                charts.append(chart)
+            return alt.concat(*charts, columns=columns).configure_view(stroke=None)
+
+        # If only cumulative is specified, draw an ecdf
+        elif cumulative:
+            default_mark = dict(
+                type = 'line',
+                interpolate="step-after",
+                opacity=0.8,
+            )
+
+            mark.update({
+                key: default_mark[key]
+                for key in default_mark
+                if key not in mark
+            })
+
+            charts = []
+            for col in selected_data.select_dtypes('number'):
+                default_encoding = dict(
+                    x=alt.X(f"{col}:Q"),
+                    y=alt.Y("ecdf:Q"),
+                    color=color,
+                )
+                chart_encoding = encoding | {
+                    key: default_encoding[key]
+                    for key in default_encoding
+                    if key not in encoding
+                }
+                # If x channel options are set manually, but no field is given
+                if 'x' in encoding and 'field' not in encoding['x']:
+                    chart_encoding['x']['field'] = col
+                charts.append(
+                    alt.Chart(
+                        selected_data,
+                        mark=mark,
+                        encoding=chart_encoding
+                    ).transform_window(
+                        ecdf="cume_dist()",
+                        sort=[{"field": col}],
+                        groupby=[] if color == alt.Color() else [color['field']],
+                    ).properties(
+                        height=180,
+                        width=180,
+                    )
+                )
+            return alt.concat(*charts, columns=columns).configure_view(stroke=None)
+
+        else:
+            default_mark = dict(
+                type = 'tick',
+                opacity=0.4,
+                # yOffset=-4,
+                # height=7,
+            )
+
+            mark.update({
+                key: default_mark[key]
+                for key in default_mark
+                if key not in mark
+            })
+
+            charts = []
+            for col in selected_data.select_dtypes('number'):
+                default_encoding = dict(
+                    x=alt.X(f"{col}:Q"),
+                    color=color,
+                )
+                chart_encoding = encoding | {
+                    key: default_encoding[key]
+                    for key in default_encoding
+                    if key not in encoding
+                }
+                # If x channel options are set manually, but no field is given
+                if 'x' in encoding and 'field' not in encoding['x']:
+                    chart_encoding['x']['field'] = col
+                charts.append(
+                    alt.Chart(
+                        data,
+                        encoding=chart_encoding,
+                        mark=mark,
+                    ).properties(
+                        width=180,
+                    )
+                )
+            return alt.concat(*charts, columns=columns).configure_view(stroke=None)
+
+
+    return selected_data
 
 
 def heatmap(data, color=None, sort=None, rescale='min-max',
