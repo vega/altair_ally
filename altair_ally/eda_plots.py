@@ -218,7 +218,7 @@ def get_label_angle(
 from typing import Union
 def dist(
     data: pd.DataFrame,
-    color: str = None, # Shortcut for color encoding
+    color: Union[str, alt.Color] = None, # Shortcut for color encoding
     dtype: str = 'numerical', # preface with ! for exluding  # TODO only allow cat and num?
     # Transform
     density: bool = None,
@@ -231,7 +231,51 @@ def dist(
     # TODO Should there also be a shortcut for `stack`?
     columns: int = None,
 ) -> alt.ConcatChart:
+    """
+    Plot the distribution of each dataframe column.
 
+    Visualize univariate distributions
+    of either numerical or categorical variables.
+    Numercial distributions can be plotted as density plots, histograms, ECDFs, and rug plots.
+    The default is to plot numerical distributions as density plots
+    since these are easy to compare across multiple subgroups (colors).
+    Since density plots can be misleadingly smooth with small datasets,
+    a rug plot is included by default to indicate the number of observations in the data.
+    Any encoding and mark option supported by Altair
+    can be specified via their respective parameter,
+    and the options are added to the default values.
+
+    Parameters
+    ----------
+    data : DataFrame
+        pandas DataFrame with input data.
+    color : str, dict, or alt.Color
+        Column in `data` used for the color encoding.
+    dtype : str
+        Which column types to plot, either '`numerical`' or `'categorical'`
+    density : bool
+        Whether to plot a kernel density estimate for the distribution.
+    bin : bool
+        Whether to plot a histogram for the distribution.
+    cumulative :
+        Whether to plot the cumulative version of the chart.
+        When `density` and `bin` are both set to `False`,
+        this creates an empiracal cumulative density function chart.
+    mark : str or alt.MarkDef
+        Mark options to be used in the chart.
+    encoding : dict or alt.Encoding
+        Encoding options to be added in addition to the defaults,
+        e.g. to sort in another order.
+    columns : int
+        The number of columns in the plot grid.
+        The default is to try to create a square grid.
+
+    Returns
+    -------
+    ConcatChart
+        Concatenated Chart containing one chart per data frame column
+        laid out in a squarish grid.
+    """
     # TODO is ValueError the correct one to raise here?
     if dtype == 'numerical':
         selected_data = data.select_dtypes(include='number').copy()
