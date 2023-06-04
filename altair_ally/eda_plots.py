@@ -300,17 +300,16 @@ def dist(
         xOffset = alt.XOffset()
         color = alt.Color()
     else:
-        # This should happen after the columns grid computation above
-        if dtype == 'numerical':
-            selected_data[color] = data[color]
         if isinstance(color, str):
             color = alt.utils.parse_shorthand(color)
         elif isinstance(color, alt.Color):
-            # validate=False is to allow passing options without a color string, is that needed even?
-            # TODO Should work but doesn't https://github.com/altair-viz/altair/issues/3075
-            color = color.to_dict(validate=False)
+            print('here')
+            color = color.to_dict(context=dict(data=data))
         else:
             raise ValueError('`color` needs to be a string or a `alt.Color` instance.')
+        # This should happen after the columns grid computation above
+        if dtype == 'numerical':
+            selected_data[color['field']] = data[color['field']]
         # Make colors categorical unless otherwise specified
         if 'type' not in color:
             color['type'] = 'nominal'
