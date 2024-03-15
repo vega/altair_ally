@@ -1,6 +1,6 @@
 # Altair Ally
 
-*This package is in early development and its API might change.*
+*This package is in early development and its API might change without notice.*
 
 Altair Ally is a companion package to Altair,
 which provides a few shortcuts to create common plots
@@ -30,4 +30,4 @@ pip install altair-ally
 
 ## Documentation
 
-[This Jupyter Book contains the documentation with more info and examples.](https://joelostblom.github.io/altair_ally/)
+[This Jupyter Book contains the documentation with more info and examples.](https://altair-viz.github.io/altair_ally/)
