@@ -288,7 +288,7 @@ def dist(
     else:
         raise ValueError("`dtype` needs to be either `'categorical'` or `'numerical'`'.")
 
-    # TODO this could possible be refined when there are many categorical columns to create a certical column instead?
+    # TODO this could possible be refined when there are many categorical columns to create a vertical column instead?
     if columns is None:
         if selected_data.columns.size <= 3:
             columns = selected_data.columns.size
