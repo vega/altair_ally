@@ -412,13 +412,21 @@ def pair(data, color=None, tooltip=None, mark='point', width=150, height=150):
         color_alt = alt.Color(color, type=alt.utils.infer_vegalite_type_for_pandas(data[color])).legend(orient='top')
         legend_color = color
 
-    # Set up interactions
-    brush = alt.selection_interval()
-    color = alt.condition(brush, color_alt, alt.value('lightgrey'))
-    legend_click = alt.selection_multi(fields=[legend_color], bind='legend')
-    opacity = alt.condition(legend_click, alt.value(0.8), alt.value(0.2))
     hidden_axis = alt.Axis(domain=False, title='', labels=False, ticks=False)
 
+    if mark == 'rect':
+        bins = {'maxbins': 30}
+        color = 'count()'
+        opacity = alt.value(1)
+        tooltip = 'count()'
+    else:
+        bins = False
+        # Set up interactions
+        brush = alt.selection_interval()
+        color = alt.condition(brush, color_alt, alt.value('lightgrey'))
+        legend_click = alt.selection_multi(fields=[legend_color], bind='legend')
+        opacity = alt.condition(legend_click, alt.value(0.6), alt.value(0.1))
+        # plot_data = data.sample(400)
     # Create corner of pair-wise scatters
     i = 0
     exclude_zero = alt.Scale(zero=False)
@@ -429,23 +437,23 @@ def pair(data, color=None, tooltip=None, mark='point', width=150, height=150):
         for num, (y, x) in enumerate(col_combos[:i+1]):
             if num == 0 and i == len(cols) - 2:
                 subplot = alt.Chart(data, mark=mark).encode(
-                    alt.X(x, scale=exclude_zero),
-                    alt.Y(y, scale=exclude_zero))
+                    alt.X(x, scale=exclude_zero).bin(bins),
+                    alt.Y(y, scale=exclude_zero).bin(bins))
             elif num == 0:
                 subplot = (
                     alt.Chart(data, mark=mark).encode(
-                        alt.X(x, scale=exclude_zero, axis=hidden_axis),
-                        alt.Y(y, scale=exclude_zero)))
+                        alt.X(x, scale=exclude_zero, axis=hidden_axis).bin(bins),
+                        alt.Y(y, scale=exclude_zero).bin(bins)))
             elif i == len(cols) - 2:
                 subplot = (
                     alt.Chart(data, mark=mark).encode(
-                        alt.X(x, scale=exclude_zero),
-                        alt.Y(y, scale=exclude_zero, axis=hidden_axis)))
+                        alt.X(x, scale=exclude_zero).bin(bins),
+                        alt.Y(y, scale=exclude_zero, axis=hidden_axis).bin(bins)))
             else:
                 subplot = (
                     alt.Chart(data, mark=mark).encode(
-                        alt.X(x, scale=exclude_zero, axis=hidden_axis),
-                        alt.Y(y, scale=exclude_zero, axis=hidden_axis)))
+                        alt.X(x, scale=exclude_zero, axis=hidden_axis).bin(bins),
+                        alt.Y(y, scale=exclude_zero, axis=hidden_axis).bin(bins)))
             plot_column.append(
                 subplot
                 .encode(opacity=opacity, color=color, tooltip=tooltip)
@@ -454,9 +462,13 @@ def pair(data, color=None, tooltip=None, mark='point', width=150, height=150):
         i += 1
         col_combos = col_combos[i:]
 
-    return (
-        alt.vconcat(*subplot_row)
-        .add_selection(brush, legend_click))
+    if mark == 'rect':
+        return alt.vconcat(*subplot_row)
+    else:
+        return (
+            alt.vconcat(*subplot_row)
+            .add_selection(brush, legend_click)
+        )
 
 
 def parcoord(data, color=None, rescale='min-max'):
