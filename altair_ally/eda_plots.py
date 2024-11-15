@@ -57,8 +57,9 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
                alt.Y('variable', sort=var_sort[::-1], title='', axis=yaxis),
                alt.Color('value', title='', scale=alt.Scale(domain=[-1, 1], scheme='blueorange')),
                alt.Size('abs_value:Q', scale=alt.Scale(domain=[0, 1]), legend=None),
-               alt.Tooltip('value', format='.2f'),
-               opacity=alt.condition(hover, alt.value(0.9), alt.value(0.2))).add_selection(hover))
+               [alt.Tooltip('value', format='.2f').title('corr'), alt.Tooltip('index').title('x'), alt.Tooltip('variable').title('y')]
+            )
+        )
 
     return alt.concat(*subplot_row).resolve_axis(y='shared').configure_view(strokeWidth=0)
 
