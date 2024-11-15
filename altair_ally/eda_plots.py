@@ -38,7 +38,7 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
             yaxis = alt.Axis(labels=False)
         else:
             yaxis = alt.Axis()
-        corr_df = data.select_dtypes('number').corr(corr_type)
+        corr_df = data.select_dtypes(['number', 'boolean']).corr(corr_type)
         mask = np.zeros_like(corr_df, dtype=bool)
         mask[np.triu_indices_from(mask)] = True
         corr_df[mask] = np.nan
@@ -46,6 +46,7 @@ def corr(data, corr_types=['pearson', 'spearman'], mark='circle', select_on='mou
         corr2 = corr_df.reset_index().melt(id_vars='index').dropna().sort_values('variable', ascending=False)
         var_sort = corr2['variable'].value_counts().index.tolist()
         ind_sort = corr2['index'].value_counts().index.tolist()
+        # sorted_cols = (corr_df.abs().sum(axis=1) + corr_df.abs().sum(axis=0)).sort_values().index.to_list()
 
         subplot_row.append(
             alt.Chart(corr2, mark=mark, title=f'{corr_type.capitalize()} correlations')
