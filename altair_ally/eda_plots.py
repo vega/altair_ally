@@ -139,7 +139,7 @@ def dist(data, color=None, mark=None, dtype='number', columns=None, rug=True):
             print("Only bar mark supported")
         else:
             charts = []
-            for col in selected_data.columns:
+            for col in selected_data.nunique().sort_values().index:
                 charts.append(
                     alt.vconcat(
                         alt.Chart(data.sample(data.shape[0]), width=120).mark_bar().encode(
