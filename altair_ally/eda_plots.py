@@ -184,8 +184,10 @@ def dist(data, color=None, mark=None, dtype='number', columns=None, rug=True):
                 )
                 subplot += subplot.mark_line()
                 if rug:
-                    rugplot = alt.Chart(data).mark_tick(color='black', opacity=0.3, yOffset=60 - 3, height=7).encode(
-                        alt.X(col))
+                    rugplot = alt.Chart(data).mark_tick(color='black', opacity=0.3, yOffset=68 - 3, height=5).encode(
+                        alt.X(col).axis(offset=8),
+                        tooltip=alt.value('Individual observations')
+                    )
                     subplot = subplot + rugplot
 
                 subplot_row.append(subplot)
