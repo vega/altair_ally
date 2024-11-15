@@ -10,7 +10,7 @@ setup(
     install_requires=['altair', 'vega_datasets', 'pandas'],
     python_requires='>=3.6',
     license='BSD-3',
-    version='0.1.0',
+    version='0.1.1',
     description='''Altair Ally is a companion package to Altair, which provides shortcuts to create common plots for exploratory data analysis, particularly those involving visualization of an entire dataset.''',
     # Include readme in markdown format, GFM markdown style by default
     long_description=open('README.md').read(),
