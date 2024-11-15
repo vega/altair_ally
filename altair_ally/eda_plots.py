@@ -174,13 +174,15 @@ def dist(data, color=None, mark=None, dtype='number', columns=None, rug=True):
             subplot_row = []
             for col in selected_data.columns.tolist()[::-1]:
                 subplot = (
-                    alt.Chart(data, mark=alt.MarkDef(mark, opacity=opacity)).transform_density(
+                    alt.Chart(data, mark=alt.MarkDef(mark, opacity=0.1)).transform_density(
                         col, [col, 'density'], groupby=[color], minsteps=100)
                     .encode(
                         alt.X(col, axis=alt.Axis(grid=False)),
-                        alt.Y('density:Q', title=None),
+                        alt.Y('density:Q', title=None).stack(False),
                         alt.Color(color, title=None))
-                    .properties(width=185, height=120))
+                    .properties(width=185, height=120)
+                )
+                subplot += subplot.mark_line()
                 if rug:
                     rugplot = alt.Chart(data).mark_tick(color='black', opacity=0.3, yOffset=60 - 3, height=7).encode(
                         alt.X(col))
