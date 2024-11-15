@@ -405,11 +405,11 @@ def pair(data, color=None, tooltip=None, mark='point', width=150, height=150):
 
     # Infer color data type if not specified
     if color[-2:] in [':Q', ':T', ':N', ':O']:
-        color_alt = alt.Color(color, title=None, legend=alt.Legend(orient='left', offset=width * -1.6))
+        color_alt = alt.Color(color).legend(orient='top')
         # The selection fields parmeter does not work with the suffix
         legend_color = color.split(':')[0]
     else:
-        color_alt = alt.Color(color, title=None, type=alt.utils.infer_vegalite_type(data[color]))
+        color_alt = alt.Color(color, type=alt.utils.infer_vegalite_type_for_pandas(data[color])).legend(orient='top')
         legend_color = color
 
     # Set up interactions
