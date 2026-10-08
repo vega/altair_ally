@@ -28,6 +28,11 @@ but much more extensive manner.
 pip install altair-ally
 ```
 
+The development version requires Python 3.11 or newer and supports Altair 6.x
+and pandas 1.5.3 through 3.x. Examples use the built-in `altair.datasets` loader.
+See the [compatibility and migration guide](compatibility.md) for installation
+from a checkout and changes since the published 0.1.1 release.
+
 ## Usage
 
 See [the examples section](examples.ipynb).
