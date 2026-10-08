@@ -347,6 +347,40 @@ def test_nan_handles_named_duplicate_indexes(has_missing, data, missing):
     pd.testing.assert_frame_equal(frame, original)
 
 
+@pytest.mark.parametrize('selected', [False, True])
+def test_nan_brush_contrasts_with_cells_and_filters_counts(selected, missing):
+    spec, _ = render(eda_plots.nan(missing))
+    version = re.search(r'/v(\d+\.\d+)\.', spec['$schema']).group(1)
+    vega = vlc.vegalite_to_vega(spec, vl_version=version)
+    param = spec['params'][0]
+    name = param['name']
+    if selected:
+        # Initialize the selection store and pixel extent as after a drag.
+        fields = next(node['value'] for node in nodes(vega) if node.get('name') == f'{name}_tuple_fields')
+        store = next(dataset for dataset in vega['data'] if dataset['name'] == f'{name}_store')
+        store['values'] = [{'unit': param['views'][0], 'fields': fields, 'values': [[1, 2]]}]
+        extent = next(node for node in nodes(vega) if node.get('name') == f'{name}_x')
+        extent['value'] = [1, 3]
+        extent.pop('on')
+
+    scenegraph = vlc.vega_to_scenegraph(vega)
+    cells = [node for node in nodes(scenegraph) if node.get('description', '').startswith('index:')]
+    assert len(cells) == len(missing) * missing.isna().any().sum()
+    for cell in cells:
+        index = int(re.search(r'index: (\d+)', cell['description']).group(1))
+        expected = 1 if not selected or index in (1, 2) else 0.3
+        assert cell['opacity'] == pytest.approx(expected)
+
+    counts = [node['description'] for node in nodes(scenegraph) if node.get('description', '').startswith('Count of Records:')]
+    counted_fields = {re.search(r'variable: (\w+)', label).group(1) for label in counts}
+    assert counted_fields == ({'x', 'y'} if selected else {'x', 'y', 'group'})
+    if selected:
+        brush = next(node for node in nodes(scenegraph) if node.get('name') == f'{name}_brush')
+        assert brush['items'][0]['stroke'] == '#1f2937'
+        assert brush['items'][0]['strokeWidth'] == 2
+        assert brush['items'][0]['width'] > 0
+
+
 @pytest.mark.parametrize('options, message', [
     ({'density': True, 'bin': True}, 'binned'),
     ({'dtype': 'categorical', 'bin': True}, 'Cannot bin'),

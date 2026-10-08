@@ -669,6 +669,7 @@ def nan(data):
 
     There is a default interaction defined where selections in the heatmap
     will update the counts in the barplot.
+    The selected range has a dark outline, and observations outside it are faded.
 
     Parameters
     ----------
@@ -708,7 +709,10 @@ def nan(data):
     max_nans = int(nan_counts['count'].max()) if not nan_counts.empty else 1
 
     # Bar chart of NaN counts per column
-    zoom = alt.selection_interval(name=f'nan_brush_{next(_chart_ids)}', encodings=['x'])
+    zoom = alt.selection_interval(
+        name=f'nan_brush_{next(_chart_ids)}', encodings=['x'],
+        mark=alt.BrushConfig(fillOpacity=0, stroke='#1f2937', strokeWidth=2),
+    )
     nan_bars = (
         alt.Chart(data.query('value == True'), title='NaN count').mark_bar(color='steelblue', height=17).encode(
             alt.X('count()', axis=None, scale=alt.Scale(domain=[0, max_nans])),
@@ -729,7 +733,8 @@ def nan(data):
             alt.Y('variable:N', title=None, sort=sorted_nan_cols),
             alt.Color('value:N', scale=color_scale, sort=[False, True],
                       legend=alt.Legend(orient='top', offset=-13), title=None),
-            alt.Stroke('value:N', scale=color_scale, sort=[False, True], legend=None))
+            alt.Stroke('value:N', scale=color_scale, sort=[False, True], legend=None),
+            opacity=alt.condition(zoom, alt.value(1), alt.value(0.3)))
         .properties(width=heatmap_width).add_params(zoom))
 
     # Bind bar chart update to zoom in individual chart and add hover to individual chart,
