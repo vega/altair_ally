@@ -220,6 +220,27 @@ def test_default_density_is_unstacked_with_outline_and_offset_rug(data):
             assert layer['encoding']['x']['axis']['offset'] > 0
 
 
+@pytest.mark.parametrize('color', [None, 'group'])
+@pytest.mark.parametrize('mark, expected_opacity', [
+    ('line', 0.9),
+    (alt.MarkDef(type='line', strokeWidth=4), 0.9),
+    ({'type': 'line'}, 0.9),
+    (alt.MarkDef(type='line', opacity=0.4), 0.4),
+])
+def test_density_lines_render_with_visible_or_custom_opacity(color, mark, expected_opacity, data):
+    spec, _ = render(eda_plots.dist(data, color, mark=mark))
+    version = re.search(r'/v(\d+\.\d+)\.', spec['$schema']).group(1)
+    scenegraph = vlc.vegalite_to_scenegraph(spec, vl_version=version)
+    lines = [
+        node for node in nodes(scenegraph)
+        if node.get('marktype') == 'line' and node.get('role') == 'mark'
+    ]
+    assert lines
+    for line in lines:
+        assert line['items']
+        assert all(item['opacity'] == pytest.approx(expected_opacity) for item in line['items'])
+
+
 @pytest.mark.parametrize('color, expected_total', [(None, 8), ('group:N', 4)])
 def test_cumulative_histogram_counts_are_computed_per_group(color, expected_total, data):
     _, labels = render(eda_plots.dist(data[['x', 'group']], bin=4, cumulative=True, color=color))

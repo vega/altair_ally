@@ -331,6 +331,7 @@ def dist(
         Mark options added to the defaults. For compatibility with version 0.1.1,
         ``mark='bar'`` selects a histogram for numerical data unless ``density``
         is explicitly enabled. Default densities use a faded area and an outline.
+        Density lines default to opacity 0.9; explicit mark options override it.
     dtype : str
         Either 'numerical' or 'categorical'. The legacy 'number' alias selects
         numerical columns; 'object' selects object and string columns, 'category'
@@ -508,6 +509,7 @@ def dist(
                 )
             charts.append(chart.encode(**_merge_encodings(defaults, encoding, selected_data)))
     elif density:
+        mark_type = mark.get('type', 'line' if cumulative else 'area')
         for col in plot_columns:
             defaults = {
                 'x': alt.X('value:Q').title(col).axis(grid=False, offset=8 if rug else 0),
@@ -515,8 +517,8 @@ def dist(
                 **colors,
             }
             chart_mark = {
-                'type': 'line' if cumulative else 'area',
-                'opacity': 0.9 if cumulative else 0.1,
+                'type': mark_type,
+                'opacity': 0.1 if mark_type == 'area' and not cumulative else 0.9,
                 **mark,
             }
             chart = (

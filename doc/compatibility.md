@@ -75,6 +75,8 @@ aly.dist(df, dtype='categorical', color='species')
   pandas categories retain their category order on the axis.
 - Default densities retain 0.1.1's faded area and line outline. Density areas
   are explicitly unstacked, so colored distributions overlap rather than sum.
+- Explicit `mark='line'` density plots use opacity 0.9, matching the outlines
+  rather than the faded area fill. Explicit custom opacity values take precedence.
 - `rug=False` removes observations from density plots. Explicit `density=True`
   omits the rug by default; use `rug=True` to add it back.
 - Uncolored charts omit color encodings and legend selections rather than use
