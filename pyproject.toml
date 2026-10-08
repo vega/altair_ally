@@ -1,3 +1,74 @@
 [build-system]
-requires = ["setuptools>=61"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "altair-ally"
+dynamic = ["version"]
+description = "Shortcuts for exploratory data analysis plots with Altair."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+authors = [{ name = "Joel Ostblom", email = "joel.ostblom@protonmail.com" }]
+dependencies = [
+    "altair>=6.0,<7",
+    "pandas>=1.5.3,<4",
+    "numpy>=1.23.5",
+]
+
+[project.urls]
+Documentation = "https://altair-viz.github.io/altair_ally/"
+Source = "https://github.com/vega/altair_ally"
+Issues = "https://github.com/vega/altair_ally/issues"
+
+[dependency-groups]
+test = ["pytest>=7", "vl-convert-python>=1.9"]
+dev = [{ include-group = "test" }, "taskipy>=1.14.1"]
+doc = ["jupyter-book>=1,<2", "session-info"]
+
+[tool.uv]
+required-version = ">=0.10.4"
+default-groups = ["dev"]
+
+[tool.hatch.version]
+path = "altair_ally/_version.py"
+
+[tool.hatch.build]
+exclude = ["**/.ipynb_checkpoints/**", "**/__pycache__/**"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["altair_ally"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/altair_ally",
+    "/tests",
+    "/doc/*.md",
+    "/doc/*.rst",
+    "/doc/*.yml",
+    "/doc/_static",
+    "/doc/examples.ipynb",
+    "/doc/logo.png",
+    "/doc/references.bib",
+    "/README.md",
+    "/CONTRIBUTING.md",
+    "/LICENSE",
+    "/pyproject.toml",
+    "/uv.lock",
+    "/.python-version",
+]
+
+[tool.taskipy.settings]
+cwd = "."
+
+[tool.taskipy.tasks]
+test = "python -m pytest"
+doc-build = "jupyter-book build doc -W --keep-going"
+doc-serve = "python -m http.server --directory doc/_build/html"
+build = "uv build"
+lock-check = "uv lock --check"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["error"]

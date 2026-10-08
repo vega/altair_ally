@@ -32,10 +32,12 @@ The development version requires **Python 3.11 or newer** and supports
 **Altair 6.x**, including 6.3.0, and pandas 1.5.3 through 3.x.
 Examples use Altair's built-in dataset loader, `altair.datasets`.
 
-To try the unreleased compatibility updates from this checkout:
+To try the unreleased compatibility updates from this checkout, install
+[uv](https://docs.astral.sh/uv/getting-started/installation/) and run:
 
 ```sh
-pip install -e .
+uv sync --locked
+uv run python
 ```
 
 ## Documentation
@@ -48,10 +50,16 @@ expanded `dist()` options and changes since 0.1.1.
 ## Development
 
 ```sh
-pip install -e '.[test,doc]'
-python -m pytest
-jupyter-book build doc
+uv sync --locked --all-groups
+uv run task test
+uv run --group doc task doc-build
+uv run task build
 ```
 
 The test suite validates chart specifications and renders them with Vega-Lite.
 CI covers the minimum dependencies, Altair 6.0 and 6.3, and pandas 3.
+
+Project metadata, development dependencies, pytest configuration, and tasks live
+in `pyproject.toml`. The committed `uv.lock` makes development reproducible;
+`.python-version` selects Python 3.13 locally, while CI also checks Python 3.11.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for dependency updates and CI overrides.

@@ -1,2 +1,0 @@
-include pytest.ini
-include doc/compatibility.md

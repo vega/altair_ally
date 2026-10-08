@@ -4,7 +4,8 @@
 
 The unreleased **0.2.0.dev0** version combines the expanded distribution API
 from `main` with the plotting improvements released in 0.1.1. Install it from
-this checkout with `pip install -e .`.
+this checkout with `uv sync --locked`, then use `uv run` to run Python or notebooks
+in the project environment.
 
 Supported dependencies are Altair **6.x**, pandas **1.5.3 through 3.x**,
 NumPy **1.23.5 or newer**, and Python **3.11 or newer**. CI checks the minimum
@@ -128,11 +129,17 @@ empty data, and dtype selections with no matching columns raise `ValueError`.
 ## Running the checks
 
 ```sh
-pip install -e '.[test,doc]'
-python -m pytest
-jupyter-book build doc
+uv sync --locked --all-groups
+uv run task test
+uv run --group doc task doc-build
+uv run task build
 ```
 
 Tests treat warnings as errors and check both schema validation and actual
 Vega-Lite rendering. They also verify cumulative counts, ECDF endpoints, shared
 selection scopes, caller-owned objects, and legacy arguments.
+
+The default `dev` dependency group includes the tests and task runner. The `doc`
+group adds Jupyter Book and notebook dependencies. Development dependencies are
+defined in `pyproject.toml` and resolved in `uv.lock`; contributor setup now uses
+`uv sync` rather than `pip install -e '.[test,doc]'`.

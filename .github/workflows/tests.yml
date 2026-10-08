@@ -5,6 +5,25 @@ on:
   pull_request:
 
 jobs:
+  locked:
+    name: Locked development environment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: '0.10.4'
+          enable-cache: true
+      - name: Install locked development dependencies
+        run: uv sync --locked
+      - name: Test schema validation and rendering
+        run: uv run --locked task test
+      - name: Build source distribution and wheel
+        run: uv build
+
   compatibility:
     runs-on: ubuntu-latest
     strategy:
@@ -36,7 +55,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Install package and test dependencies
-        run: python -m pip install '.[test]' 'altair==${{ matrix.altair }}' 'pandas==${{ matrix.pandas }}' '${{ matrix.numpy }}'
-      - name: Test schema validation and rendering
-        run: python -m pytest
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: '0.10.4'
+          enable-cache: true
+      - name: Test supported dependency versions
+        # Overlay version pins without changing the project's lockfile.
+        run: >-
+          uv run --locked --python '${{ matrix.python }}'
+          --with 'altair==${{ matrix.altair }}'
+          --with 'pandas==${{ matrix.pandas }}'
+          --with '${{ matrix.numpy }}'
+          task test
