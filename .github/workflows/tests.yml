@@ -1,0 +1,42 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: '3.11'
+            altair: '6.0.0'
+            pandas: '1.5.3'
+            numpy: 'numpy==1.23.5'
+          - python: '3.11'
+            altair: '6.0.0'
+            pandas: '2.3.3'
+            numpy: numpy
+          - python: '3.11'
+            altair: '6.3.0'
+            pandas: '2.3.3'
+            numpy: numpy
+          - python: '3.13'
+            altair: '6.3.0'
+            pandas: '2.3.3'
+            numpy: numpy
+          - python: '3.13'
+            altair: '6.3.0'
+            pandas: '3.0.3'
+            numpy: numpy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install package and test dependencies
+        run: python -m pip install '.[test]' 'altair==${{ matrix.altair }}' 'pandas==${{ matrix.pandas }}' '${{ matrix.numpy }}'
+      - name: Test schema validation and rendering
+        run: python -m pytest

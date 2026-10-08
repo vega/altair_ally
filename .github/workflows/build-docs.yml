@@ -9,6 +9,10 @@ on:
     branches: [ main ]
     paths:
       - 'doc/**'
+      - 'altair_ally/**'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - '.github/workflows/build-docs.yml'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,29 +21,31 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
+    permissions:
+      contents: write
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.13'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install . setuptools jupyter-book ghp-import pandas altair vega_datasets==0.8.0 session_info
+          python -m pip install '.[doc]'
 
       - name: Build the book
-        run: jb build doc
+        run: jb build doc -W --keep-going
 
       - name: Push to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3.6.1
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: doc/_build/html

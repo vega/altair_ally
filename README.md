@@ -28,6 +28,30 @@ but much more extensive manner.
 pip install altair-ally
 ```
 
+The development version requires **Python 3.11 or newer** and supports
+**Altair 6.x**, including 6.3.0, and pandas 1.5.3 through 3.x.
+Examples use Altair's built-in dataset loader, `altair.datasets`.
+
+To try the unreleased compatibility updates from this checkout:
+
+```sh
+pip install -e .
+```
+
 ## Documentation
 
 [This Jupyter Book contains the documentation with more info and examples.](https://altair-viz.github.io/altair_ally/)
+
+See [the compatibility and migration guide](doc/compatibility.md) for the
+expanded `dist()` options and changes since 0.1.1.
+
+## Development
+
+```sh
+pip install -e '.[test,doc]'
+python -m pytest
+jupyter-book build doc
+```
+
+The test suite validates chart specifications and renders them with Vega-Lite.
+CI covers the minimum dependencies, Altair 6.0 and 6.3, and pandas 3.
