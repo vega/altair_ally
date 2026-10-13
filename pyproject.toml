@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://altair-viz.github.io/altair_ally/"
+Documentation = "https://vega.github.io/altair_ally/"
 Source = "https://github.com/vega/altair_ally"
 Issues = "https://github.com/vega/altair_ally/issues"
 
@@ -30,6 +30,7 @@ doc = ["jupyter-book>=1,<2", "session-info"]
 [tool.uv]
 required-version = ">=0.10.4"
 default-groups = ["dev"]
+cache-keys = [{ file = "pyproject.toml" }, { file = "altair_ally/_version.py" }]
 
 [tool.hatch.version]
 path = "altair_ally/_version.py"
@@ -53,6 +54,7 @@ include = [
     "/doc/references.bib",
     "/README.md",
     "/CONTRIBUTING.md",
+    "/CHANGELOG.md",
     "/LICENSE",
     "/pyproject.toml",
     "/uv.lock",

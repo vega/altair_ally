@@ -34,6 +34,10 @@ Metadata, dependency groups, pytest settings, and task definitions live in
 `pyproject.toml`. Hatchling reads the package version from
 `altair_ally/_version.py`, which is also used at runtime.
 
+When migrating an older Setuptools checkout, remove the obsolete generated
+`altair_ally.egg-info/` directory if it is still present, then sync again. Its
+cached metadata can otherwise mask the installed package's version.
+
 ## Update dependencies
 
 After editing dependency requirements, regenerate the lockfile:

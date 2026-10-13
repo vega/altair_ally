@@ -9,8 +9,8 @@ jobs:
     name: Locked development environment
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.13'
       - uses: astral-sh/setup-uv@v7
@@ -23,6 +23,8 @@ jobs:
         run: uv run --locked task test
       - name: Build source distribution and wheel
         run: uv build
+      - name: Check distribution metadata and README rendering
+        run: uvx twine check --strict dist/*.whl dist/*.tar.gz
 
   compatibility:
     runs-on: ubuntu-latest
@@ -51,8 +53,8 @@ jobs:
             pandas: '3.0.3'
             numpy: numpy
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
       - uses: astral-sh/setup-uv@v7

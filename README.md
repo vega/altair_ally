@@ -28,11 +28,11 @@ but much more extensive manner.
 pip install altair-ally
 ```
 
-The development version requires **Python 3.11 or newer** and supports
+Version 0.2.0 requires **Python 3.11 or newer** and supports
 **Altair 6.x**, including 6.3.0, and pandas 1.5.3 through 3.x.
 Examples use Altair's built-in dataset loader, `altair.datasets`.
 
-To try the unreleased compatibility updates from this checkout, install
+To work with a source checkout, install
 [uv](https://docs.astral.sh/uv/getting-started/installation/) and run:
 
 ```sh
@@ -42,10 +42,11 @@ uv run python
 
 ## Documentation
 
-[This Jupyter Book contains the documentation with more info and examples.](https://altair-viz.github.io/altair_ally/)
+[This Jupyter Book contains the documentation with more info and examples.](https://vega.github.io/altair_ally/)
 
 See [the compatibility and migration guide](doc/compatibility.md) for the
 expanded `dist()` options and changes since 0.1.1.
+See [CHANGELOG.md](CHANGELOG.md) for the 0.2.0 release notes.
 
 ## Development
 

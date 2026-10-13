@@ -3,4 +3,5 @@ root: intro
 chapters:
   - file: examples
   - file: compatibility
+  - file: release_notes
   - file: api
