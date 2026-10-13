@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Adjust opacity
+
 ## 0.2.0
 
 ### Requirements and migration
