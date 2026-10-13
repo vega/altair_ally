@@ -66,7 +66,7 @@
     <link rel="icon" href="_static/logo.svg"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API Reference" href="api.html" />
+    <link rel="next" title="Release notes" href="release_notes.html" />
     <link rel="prev" title="Examples" href="examples.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -224,6 +224,7 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Compatibility and migration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
 
@@ -417,7 +418,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-version">Development version</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-2-0">Version 0.2.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-plots">Distribution plots</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compatibility-with-0-1-1">Compatibility with 0.1.1</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-marks-and-encodings">Custom marks and encodings</a></li>
@@ -438,12 +439,12 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="compatibility-and-migration">
 <h1>Compatibility and migration<a class="headerlink" href="#compatibility-and-migration" title="Link to this heading">#</a></h1>
-<section id="development-version">
-<h2>Development version<a class="headerlink" href="#development-version" title="Link to this heading">#</a></h2>
-<p>The unreleased <strong>0.2.0.dev0</strong> version combines the expanded distribution API
-from <code class="docutils literal notranslate"><span class="pre">main</span></code> with the plotting improvements released in 0.1.1. Install it from
-this checkout with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span> <span class="pre">--locked</span></code>, then use <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> to run Python or notebooks
-in the project environment.</p>
+<section id="version-0-2-0">
+<h2>Version 0.2.0<a class="headerlink" href="#version-0-2-0" title="Link to this heading">#</a></h2>
+<p>Version <strong>0.2.0</strong> combines the expanded distribution API from <code class="docutils literal notranslate"><span class="pre">main</span></code> with the
+plotting improvements released in 0.1.1. Install the release with
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">altair-ally</span></code>. For a source checkout, use <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span> <span class="pre">--locked</span></code>, then
+use <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> to run Python or notebooks in the project environment.</p>
 <p>Supported dependencies are Altair <strong>6.x</strong>, pandas <strong>1.5.3 through 3.x</strong>,
 NumPy <strong>1.23.5 or newer</strong>, and Python <strong>3.11 or newer</strong>. CI checks the minimum
 dependencies, Altair 6.0 and 6.3, and pandas 3.</p>
@@ -504,8 +505,9 @@ inferred string dtype. <code class="docutils literal notranslate"><span class="p
 <code class="docutils literal notranslate"><span class="pre">'categorical'</span></code> selects all non-numerical columns.</p></li>
 <li><p>Categorical charts are ordered from fewer to more distinct values. Ordered
 pandas categories retain their category order on the axis.</p></li>
-<li><p>Default densities retain 0.1.1’s faded area and line outline. Density areas
-are explicitly unstacked, so colored distributions overlap rather than sum.</p></li>
+<li><p>Default densities use a faded area at opacity 0.2 and a line outline at 0.9.
+Density areas are explicitly unstacked, so colored distributions overlap rather
+than sum.</p></li>
 <li><p>Explicit <code class="docutils literal notranslate"><span class="pre">mark='line'</span></code> density plots use opacity 0.9, matching the outlines
 rather than the faded area fill. Explicit custom opacity values take precedence.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rug=False</span></code> removes observations from density plots. Explicit <code class="docutils literal notranslate"><span class="pre">density=True</span></code>
@@ -621,11 +623,11 @@ defined in <code class="docutils literal notranslate"><span class="pre">pyprojec
       </div>
     </a>
     <a class="right-next"
-       href="api.html"
+       href="release_notes.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API Reference</p>
+        <p class="prev-next-title">Release notes</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -647,7 +649,7 @@ defined in <code class="docutils literal notranslate"><span class="pre">pyprojec
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-version">Development version</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-2-0">Version 0.2.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-plots">Distribution plots</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compatibility-with-0-1-1">Compatibility with 0.1.1</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-marks-and-encodings">Custom marks and encodings</a></li>

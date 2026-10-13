@@ -1,11 +1,11 @@
 # Compatibility and migration
 
-## Development version
+## Version 0.2.0
 
-The unreleased **0.2.0.dev0** version combines the expanded distribution API
-from `main` with the plotting improvements released in 0.1.1. Install it from
-this checkout with `uv sync --locked`, then use `uv run` to run Python or notebooks
-in the project environment.
+Version **0.2.0** combines the expanded distribution API from `main` with the
+plotting improvements released in 0.1.1. Install the release with
+`pip install altair-ally`. For a source checkout, use `uv sync --locked`, then
+use `uv run` to run Python or notebooks in the project environment.
 
 Supported dependencies are Altair **6.x**, pandas **1.5.3 through 3.x**,
 NumPy **1.23.5 or newer**, and Python **3.11 or newer**. CI checks the minimum
@@ -73,8 +73,9 @@ aly.dist(df, dtype='categorical', color='species')
   `'categorical'` selects all non-numerical columns.
 - Categorical charts are ordered from fewer to more distinct values. Ordered
   pandas categories retain their category order on the axis.
-- Default densities retain 0.1.1's faded area and line outline. Density areas
-  are explicitly unstacked, so colored distributions overlap rather than sum.
+- Default densities use a faded area at opacity 0.2 and a line outline at 0.9.
+  Density areas are explicitly unstacked, so colored distributions overlap rather
+  than sum.
 - Explicit `mark='line'` density plots use opacity 0.9, matching the outlines
   rather than the faded area fill. Explicit custom opacity values take precedence.
 - `rug=False` removes observations from density plots. Explicit `density=True`
