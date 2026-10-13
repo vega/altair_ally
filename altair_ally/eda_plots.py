@@ -880,7 +880,14 @@ def nan(data):
     )
 
 
-def pair(data, color=None, tooltip=None, mark="point", width=150, height=150):
+def pair(
+    data,
+    color=None,
+    tooltip=None,
+    mark=alt.MarkDef(type="point", filled=True),
+    width=150,
+    height=150,
+):
     """
     Create pairwise scatter plots of all column combinations.
 
@@ -934,7 +941,7 @@ def pair(data, color=None, tooltip=None, mark="point", width=150, height=150):
             else alt.Color(**color_options)
         )
         color = alt.condition(brush, selected_color, alt.value("lightgrey"))
-        opacity = alt.value(0.6)
+        opacity = alt.value(0.4)
         if (
             color_options
             and color_options["type"] in ("nominal", "ordinal")
@@ -946,7 +953,7 @@ def pair(data, color=None, tooltip=None, mark="point", width=150, height=150):
                 bind="legend",
             )
             params.append(legend_click)
-            opacity = alt.condition(legend_click, alt.value(0.6), alt.value(0.1))
+            opacity = alt.condition(legend_click, alt.value(0.4), alt.value(0.1))
     hidden_axis = alt.Axis(domain=False, title="", labels=False, ticks=False)
 
     # Create corner of pair-wise scatters
