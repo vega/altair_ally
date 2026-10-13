@@ -785,7 +785,7 @@ def nan(data):
 
     There is a default interaction defined where selections in the heatmap
     will update the counts in the barplot.
-    The selected range has a dark outline, and observations outside it are faded.
+    The brush uses Altair's default styling, and observations outside it are faded.
 
     Parameters
     ----------

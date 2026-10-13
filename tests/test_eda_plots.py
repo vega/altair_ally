@@ -348,7 +348,7 @@ def test_nan_handles_named_duplicate_indexes(has_missing, data, missing):
 
 
 @pytest.mark.parametrize('selected', [False, True])
-def test_nan_brush_contrasts_with_cells_and_filters_counts(selected, missing):
+def test_nan_selection_highlights_cells_and_filters_counts(selected, missing):
     spec, _ = render(eda_plots.nan(missing))
     version = re.search(r'/v(\d+\.\d+)\.', spec['$schema']).group(1)
     vega = vlc.vegalite_to_vega(spec, vl_version=version)
@@ -376,9 +376,11 @@ def test_nan_brush_contrasts_with_cells_and_filters_counts(selected, missing):
     assert counted_fields == ({'x', 'y'} if selected else {'x', 'y', 'group'})
     if selected:
         brush = next(node for node in nodes(scenegraph) if node.get('name') == f'{name}_brush')
-        assert brush['items'][0]['stroke'] == '#1f2937'
-        assert brush['items'][0]['strokeWidth'] == 2
+        assert brush['items'][0]['stroke'] == 'white'
         assert brush['items'][0]['width'] > 0
+        background = next(node for node in nodes(scenegraph) if node.get('name') == f'{name}_brush_bg')
+        assert background['items'][0]['fill'] == '#333'
+        assert background['items'][0]['fillOpacity'] == pytest.approx(0.125)
 
 
 @pytest.mark.parametrize('options, message', [
