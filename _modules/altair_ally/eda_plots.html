@@ -1264,7 +1264,14 @@
 
 <div class="viewcode-block" id="pair">
 <a class="viewcode-back" href="../../api.html#altair_ally.eda_plots.pair">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">pair</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mark</span><span class="o">=</span><span class="s2">"point"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">150</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pair</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">tooltip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">mark</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">MarkDef</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"point"</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create pairwise scatter plots of all column combinations.</span>
 
@@ -1318,7 +1325,7 @@
             <span class="k">else</span> <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="o">**</span><span class="n">color_options</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">color</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">brush</span><span class="p">,</span> <span class="n">selected_color</span><span class="p">,</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">"lightgrey"</span><span class="p">))</span>
-        <span class="n">opacity</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mf">0.6</span><span class="p">)</span>
+        <span class="n">opacity</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mf">0.4</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">color_options</span>
             <span class="ow">and</span> <span class="n">color_options</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"nominal"</span><span class="p">,</span> <span class="s2">"ordinal"</span><span class="p">)</span>
@@ -1330,7 +1337,7 @@
                 <span class="n">bind</span><span class="o">=</span><span class="s2">"legend"</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">legend_click</span><span class="p">)</span>
-            <span class="n">opacity</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">legend_click</span><span class="p">,</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mf">0.6</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span>
+            <span class="n">opacity</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">legend_click</span><span class="p">,</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mf">0.4</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span>
     <span class="n">hidden_axis</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Axis</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># Create corner of pair-wise scatters</span>
