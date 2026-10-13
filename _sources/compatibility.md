@@ -125,8 +125,9 @@ empty data, and dtype selections with no matching columns raise `ValueError`.
 - `nan()` uses row positions for brushing, including when dataframe indexes are
   named or duplicated. With no missing values it shows the non-missing heatmap
   for all columns and an empty count panel.
-  The brush has a dark outline; rows outside the selection fade to 30% opacity,
-  while selected rows remain fully visible. Clearing the brush restores all rows.
+  The brush uses Altair's default white outline and translucent gray fill. Rows
+  outside the selection fade to 30% opacity, while selected rows remain fully
+  visible. Clearing the brush restores all rows.
 - Invalid `rescale` values in `heatmap()` and `parcoord()` raise `ValueError`;
   supported values are `'min-max'`, `'mean-sd'`, `None`, or a callable.
 
