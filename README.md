@@ -64,3 +64,11 @@ Project metadata, development dependencies, pytest configuration, and tasks live
 in `pyproject.toml`. The committed `uv.lock` makes development reproducible;
 `.python-version` selects Python 3.13 locally, while CI also checks Python 3.11.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for dependency updates and CI overrides.
+
+## Releasing
+
+After updating the version and changelog, run `uv run --locked task release-check`.
+The version-aware `release-build`, `release-tag`, `release-publish`, and
+`release-github` tasks automate the remaining release commands. They support
+`--dry-run` to preview commands. See [the release procedure](CONTRIBUTING.md#prepare-and-publish-a-release)
+for the commit/CI checkpoints and publication setup.

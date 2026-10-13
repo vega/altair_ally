@@ -24,7 +24,7 @@ Issues = "https://github.com/vega/altair_ally/issues"
 
 [dependency-groups]
 test = ["pytest>=7", "vl-convert-python>=1.9"]
-dev = [{ include-group = "test" }, "taskipy>=1.14.1"]
+dev = [{ include-group = "test" }, "taskipy>=1.14.1", "packaging>=23"]
 doc = ["jupyter-book>=1,<2", "session-info"]
 
 [tool.uv]
@@ -45,6 +45,7 @@ packages = ["altair_ally"]
 include = [
     "/altair_ally",
     "/tests",
+    "/tools",
     "/doc/*.md",
     "/doc/*.rst",
     "/doc/*.yml",
@@ -70,6 +71,13 @@ doc-build = "jupyter-book build doc -W --keep-going"
 doc-serve = "python -m http.server --directory doc/_build/html"
 build = "uv build"
 lock-check = "uv lock --check"
+release-version = { cmd = "python tools/release.py version", help = "Show the version used by release tasks" }
+release-notes = { cmd = "python tools/release.py notes", help = "Show the current version's changelog section" }
+release-check = { cmd = "python tools/release.py check", help = "Run tests/docs and build checked versioned artifacts" }
+release-build = { cmd = "python tools/release.py build", help = "Build and check the current release in dist/<version>" }
+release-tag = { cmd = "python tools/release.py tag", help = "Create and push the annotated release tag" }
+release-publish = { cmd = "python tools/release.py publish", help = "Upload the tagged release's wheel and sdist to PyPI" }
+release-github = { cmd = "python tools/release.py github", help = "Create a GitHub release with current-version notes and artifacts" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

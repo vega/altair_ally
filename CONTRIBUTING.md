@@ -80,42 +80,76 @@ uv, including temporary dependency overrides, is also used for the tests.
 1. Update `altair_ally/_version.py` to the final version and update `CHANGELOG.md`
    and version-specific documentation. The version file is also a uv build cache
    key, so syncing refreshes installed distribution metadata when it changes.
-2. Run the checks and build the distributions into a version-specific directory:
+   Each changelog release starts with a `## <version>` heading; bracketed versions
+   and a date after the version are also supported. Inspect the selected version
+   and notes with:
+
+   ```sh
+   uv run --locked task release-version
+   uv run --locked task release-notes
+   ```
+
+2. Run the release checks:
 
    ```sh
    uv sync --locked --all-groups
-   uv run --locked task test
-   uv run --locked --group doc task doc-build --all
-   uv build --out-dir dist/0.2.0
-   uvx twine check --strict dist/0.2.0/*
+   uv run --locked task release-check
    ```
 
 3. Commit and push the release preparation, then confirm that both the tests
    and documentation workflows pass for that commit before tagging it.
-4. Create and push the release tag, using the existing unprefixed tag convention:
+4. Create and push the annotated release tag:
 
    ```sh
-   git tag -a 0.2.0 -m "Release 0.2.0"
-   git push origin 0.2.0
+   uv run --locked task release-tag
    ```
 
-5. Publish the exact version's wheel and source distribution to PyPI using your
+5. Build the artifacts from the tagged release checkout and upload them using your
    configured PyPI credentials:
 
    ```sh
-   uv publish dist/0.2.0/altair_ally-0.2.0-py3-none-any.whl dist/0.2.0/altair_ally-0.2.0.tar.gz
+   uv run --locked task release-build
+   uv run --locked task release-publish
    ```
 
 6. Create a GitHub release from that existing tag and attach the same artifacts:
 
    ```sh
-   gh release create 0.2.0 \
-     dist/0.2.0/altair_ally-0.2.0-py3-none-any.whl \
-     dist/0.2.0/altair_ally-0.2.0.tar.gz \
-     --verify-tag --title "0.2.0" --notes-file CHANGELOG.md
+   uv run --locked task release-github
    ```
 
-Use the intended version in these commands for later releases. The repository
-currently uses manual publication; creating a tag or GitHub release does not
-automatically upload distributions to PyPI. A version-specific output directory
-keeps older artifacts in `dist/` out of the upload.
+All release tasks read the version from `_version.py` and use `dist/<version>/`.
+For example, version `0.3.0` produces `dist/0.3.0/altair_ally-0.3.0-py3-none-any.whl`
+and `dist/0.3.0/altair_ally-0.3.0.tar.gz`. Upload tasks pass these two exact files;
+older distributions are not included. GitHub release notes include only the
+matching changelog section, and release candidates are marked as prereleases.
+
+| Task | What it runs |
+| --- | --- |
+| `release-version` | Show the version from `_version.py` |
+| `release-notes` | Show that version's changelog section |
+| `release-check` | Check the lockfile, run tests, execute/build docs, build artifacts, and run strict Twine checks |
+| `release-build` | Build the versioned wheel/sdist and run strict Twine checks |
+| `release-tag` | Create and push the annotated, unprefixed version tag |
+| `release-publish` | Upload the tagged release's exact wheel/sdist to PyPI |
+| `release-github` | Verify the remote tag, create the GitHub release, and attach artifacts |
+
+Tagging requires a clean tracked working tree. Uploads also require HEAD to match
+the local version tag and the artifacts to exist. These checks preserve the
+release commit selected after CI passed. Version edits, committing the release
+preparation, and waiting for CI are the manual steps between the tasks.
+
+To preview commands without executing them:
+
+```sh
+uv run --locked task release-check --dry-run
+uv run --locked task release-tag --dry-run
+uv run --locked task release-publish --dry-run
+uv run --locked task release-github --dry-run
+```
+
+Build and upload tasks also accept `--output-dir PATH` to override the default
+artifact directory; use the same directory for subsequent upload tasks.
+`release-check` runs local validation and builds artifacts. Publishing happens
+when you explicitly run the tagging/upload tasks; creating a GitHub release
+does not automatically upload anything to PyPI.
