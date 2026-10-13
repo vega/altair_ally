@@ -74,3 +74,48 @@ These overrides leave `pyproject.toml` and `uv.lock` unchanged. Use this workflo
 to reproduce a compatibility-matrix failure locally.
 The test task invokes `python -m pytest` so the Python interpreter selected by
 uv, including temporary dependency overrides, is also used for the tests.
+
+## Prepare and publish a release
+
+1. Update `altair_ally/_version.py` to the final version and update `CHANGELOG.md`
+   and version-specific documentation. The version file is also a uv build cache
+   key, so syncing refreshes installed distribution metadata when it changes.
+2. Run the checks and build the distributions into a version-specific directory:
+
+   ```sh
+   uv sync --locked --all-groups
+   uv run --locked task test
+   uv run --locked --group doc task doc-build --all
+   uv build --out-dir dist/0.2.0
+   uvx twine check --strict dist/0.2.0/*
+   ```
+
+3. Commit and push the release preparation, then confirm that both the tests
+   and documentation workflows pass for that commit before tagging it.
+4. Create and push the release tag, using the existing unprefixed tag convention:
+
+   ```sh
+   git tag -a 0.2.0 -m "Release 0.2.0"
+   git push origin 0.2.0
+   ```
+
+5. Publish the exact version's wheel and source distribution to PyPI using your
+   configured PyPI credentials:
+
+   ```sh
+   uv publish dist/0.2.0/altair_ally-0.2.0-py3-none-any.whl dist/0.2.0/altair_ally-0.2.0.tar.gz
+   ```
+
+6. Create a GitHub release from that existing tag and attach the same artifacts:
+
+   ```sh
+   gh release create 0.2.0 \
+     dist/0.2.0/altair_ally-0.2.0-py3-none-any.whl \
+     dist/0.2.0/altair_ally-0.2.0.tar.gz \
+     --verify-tag --title "0.2.0" --notes-file CHANGELOG.md
+   ```
+
+Use the intended version in these commands for later releases. The repository
+currently uses manual publication; creating a tag or GitHub release does not
+automatically upload distributions to PyPI. A version-specific output directory
+keeps older artifacts in `dist/` out of the upload.
